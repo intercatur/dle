@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Douyin Like Effect</title>
+    <!-- Font Awesome 4 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #03050b 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f2fe, #ff0040, #ffb347);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradienGerak 2s ease infinite;
+        }
+        @keyframes gradienGerak {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(14px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .canvas-wrapper { text-align: center; }
+        canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 15px 35px rgba(0,0,0,0.5);
+            cursor: pointer;
+            background: #000;
+        }
+        .upload-area { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; }
+        .file-label {
+            background: linear-gradient(95deg, #2a2f3f, #1a1f2e);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .file-label:hover { background: linear-gradient(95deg, #3a3f4f, #2a2f3e); transform: scale(1.02); }
+        #audioName { color: #ffb347; font-size: 0.9rem; background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 50px; }
+        
+        .theme-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .theme-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 10px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+        .theme-btn i { margin-right: 8px; }
+        .theme-btn:hover { transform: translateY(-2px); background: rgba(50, 55, 70, 0.9); }
+        .theme-btn.active {
+            background: linear-gradient(95deg, #ff0040, #ff7a00);
+            border-color: #ff7a00;
+            box-shadow: 0 0 15px rgba(255,0,64,0.3);
+        }
+        
+        .res-selector { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 15px 0; }
+        .res-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .res-btn i { margin-right: 6px; }
+        .res-btn:hover { background: rgba(50, 55, 70, 0.9); transform: translateY(-2px); }
+        .res-btn.active { background: linear-gradient(95deg, #ff0040, #ff7a00); border-color: #ff7a00; box-shadow: 0 0 15px rgba(255,0,64,0.3); }
+        .res-name { font-weight: bold; font-size: 0.9rem; color: white; }
+        .res-detail { font-size: 0.65rem; color: #aaa; }
+        
+        .text-input-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .text-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .text-input-group label {
+            color: #ffd966;
+            font-weight: 600;
+            min-width: 110px;
+        }
+        .text-input-group label i { margin-right: 8px; }
+        .text-input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .text-input-group input:focus {
+            outline: none;
+            border-color: #ff0040;
+            box-shadow: 0 0 10px rgba(255,0,64,0.3);
+        }
+        
+        .controls { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px 0 15px; }
+        button {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .btn-save {
+            background: linear-gradient(95deg, #ff0040, #ff7a00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,0,64,0.3);
+        }
+        .btn-save i { margin-right: 8px; }
+        .btn-save:hover:not(:disabled) { transform: scale(1.03); box-shadow: 0 6px 25px rgba(255,0,64,0.6); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-save.rendering { animation: pulseOrange 1s infinite; }
+        @keyframes pulseOrange {
+            0% { box-shadow: 0 0 0 0 rgba(255,64,0,0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(255,64,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,64,0,0); }
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 50px;
+            background: rgba(0,0,0,0.5);
+            color: #ddd;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status.loading { background: rgba(0,100,200,0.3); color: #88ccff; }
+        .status.rendering { background: rgba(255,100,0,0.3); color: #ffaa66; }
+        .status.success { background: rgba(0,200,100,0.3); color: #88ffaa; }
+        .status.error { background: rgba(200,0,0,0.3); color: #ff8888; }
+        
+        .slider-group { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .slider-group span { color: #ffd966; }
+        .slider-group span i { margin-right: 6px; }
+        input[type="range"] {
+            width: 200px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #ff0040, #00f2fe);
+            border-radius: 10px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #ff3b6f;
+            cursor: pointer;
+        }
+        .fps-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+        }
+        .fps-group label {
+            color: white;
+            cursor: pointer;
+        }
+        .fps-group input {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .progress-container { width: 100%; margin-top: 15px; display: none; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #ff0040, #ffb347); width: 0%; transition: width 0.1s linear; border-radius: 10px; }
+        .progress-text { text-align: center; font-size: 0.8rem; margin-top: 8px; color: #ffaa66; }
+        .duration-info { text-align: center; font-size: 0.8rem; margin-top: 8px; color: #aaa; }
+        
+        @media (max-width: 700px) {
+            .title { font-size: 1.6rem; }
+            button { padding: 10px 20px; font-size: 0.9rem; }
+            .res-btn { padding: 6px 12px; }
+            .res-name { font-size: 0.75rem; }
+            .res-detail { font-size: 0.55rem; }
+            .text-input-group { flex-direction: column; align-items: stretch; }
+            .text-input-group label { min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 class="title"><i class="fa fa-bolt"></i> DOUYIN LIKE EFFECT <i class="fa fa-bolt"></i></h1>
+    </div>
+
+    <div class="card">
+        <div class="canvas-wrapper">
+            <canvas id="douyinCanvas" width="1080" height="1920" style="width:100%; height:auto; max-width:400px; margin:0 auto; display:block"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="upload-area">
+            <label class="file-label">
+                <i class="fa fa-music"></i> Upload MP3
+                <input type="file" id="audioFile" accept="audio/mpeg,audio/mp3,audio/*" style="display:none">
+            </label>
+            <span id="audioName"><i class="fa fa-headphones"></i> Belum ada musik</span>
+        </div>
+
+        <div class="theme-selector">
+            <div class="theme-btn active" data-theme="colorful"><i class="fa fa-paint-brush"></i> Colorful</div>
+            <div class="theme-btn" data-theme="dark"><i class="fa fa-moon-o"></i> Dark Glow</div>
+        </div>
+
+        <div class="text-input-area">
+            <div class="text-input-group">
+                <label><i class="fa fa-text-height"></i> Teks Atas:</label>
+                <input type="text" id="mainTextInput" value="⚡ VIRAL ⚡" maxlength="30">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-circle-o"></i> Teks Tengah:</label>
+                <input type="text" id="centerTextInput" value="DOUYIN LIKE" maxlength="20">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-hashtag"></i> Teks Bawah:</label>
+                <input type="text" id="subTextInput" value="#DouyinLike" maxlength="40">
+            </div>
+        </div>
+
+        <div class="res-selector">
+            <div class="res-btn" data-res="youtube"><i class="fa fa-youtube-play"></i><div class="res-name">YouTube</div><div class="res-detail">1920x1080</div></div>
+            <div class="res-btn" data-res="instagram"><i class="fa fa-instagram"></i><div class="res-name">Instagram Feed</div><div class="res-detail">1080x1080</div></div>
+            <div class="res-btn" data-res="instagram-story"><i class="fa fa-instagram"></i><div class="res-name">IG Story</div><div class="res-detail">1080x1920</div></div>
+            <div class="res-btn active" data-res="tiktok"><i class="fa fa-music"></i><div class="res-name">TikTok</div><div class="res-detail">1080x1920</div></div>
+            <div class="res-btn" data-res="square"><i class="fa fa-square-o"></i><div class="res-name">Square</div><div class="res-detail">800x800</div></div>
+        </div>
+
+        <div class="controls">
+            <button id="saveBtn" class="btn-save" disabled><i class="fa fa-floppy-o"></i> RENDER & SAVE WEBM</button>
+        </div>
+
+        <div class="slider-group">
+            <div class="fps-group">
+                <span><i class="fa fa-video-camera"></i> FPS:</span>
+                <label><input type="radio" name="fps" value="24"> 24</label>
+                <label><input type="radio" name="fps" value="30" checked> 30</label>
+                <label><input type="radio" name="fps" value="60"> 60</label>
+            </div>
+        </div>
+        <div class="slider-group">
+            <span><i class="fa fa-flash"></i> Intensitas</span>
+            <input type="range" id="intensitySlider" min="0" max="30" value="15">
+            <span id="intensityVal">15</span>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText">Memproses...</div>
+            <div class="duration-info" id="durationInfo"></div>
+        </div>
+
+        <div id="status" class="status"><i class="fa fa-info-circle"></i> Upload MP3 (max 10 menit), atur teks & tema, lalu RENDER</div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ==================== BATASAN DURASI ====================
+        const MAX_DURATION_SECONDS = 600; // 10 MENIT
+        const MAX_DURATION_MINUTES = 10;
+        
+        const resolutions = {
+            youtube: { width: 1920, height: 1080, name: "YouTube" },
+            instagram: { width: 1080, height: 1080, name: "Instagram" },
+            "instagram-story": { width: 1080, height: 1920, name: "IGStory" },
+            tiktok: { width: 1080, height: 1920, name: "TikTok" },
+            square: { width: 800, height: 800, name: "Square" }
+        };
+        
+        let currentRes = "tiktok";
+        let canvasWidth = 1080;
+        let canvasHeight = 1920;
+        
+        const canvas = document.getElementById('douyinCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let currentTheme = "colorful";
+        
+        const mainTextInput = document.getElementById('mainTextInput');
+        const centerTextInput = document.getElementById('centerTextInput');
+        const subTextInput = document.getElementById('subTextInput');
+        let customMainText = "⚡ VIRAL ⚡";
+        let customCenterText = "DOUYIN LIKE";
+        let customSubText = "#DouyinLike";
+        
+        mainTextInput.addEventListener('input', (e) => { customMainText = e.target.value || "⚡ VIRAL ⚡"; });
+        centerTextInput.addEventListener('input', (e) => { customCenterText = e.target.value || "DOUYIN LIKE"; });
+        subTextInput.addEventListener('input', (e) => { customSubText = e.target.value || "#DouyinLike"; });
+        
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.theme === theme) btn.classList.add('active');
+            });
+        }
+        
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+        });
+        
+        let audioFileData = null;
+        let audioDuration = 0;
+        let isRendering = false;
+        let audioContext = null;
+        let analyserNode = null;
+        let sourceNode = null;
+        
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let canvasStream = null;
+        let recordingTimeout = null;
+        let renderAnimationId = null;
+        
+        const intensitySlider = document.getElementById('intensitySlider');
+        const intensityVal = document.getElementById('intensityVal');
+        let effectIntensity = 15;
+        
+        let selectedFps = 30;
+        document.querySelectorAll('input[name="fps"]').forEach(radio => {
+            radio.addEventListener('change', (e) => { 
+                if (e.target.checked) selectedFps = parseInt(e.target.value);
+            });
+        });
+        
+        const audioFileInput = document.getElementById('audioFile');
+        const audioNameSpan = document.getElementById('audioName');
+        const saveBtn = document.getElementById('saveBtn');
+        const statusDiv = document.getElementById('status');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const durationInfo = document.getElementById('durationInfo');
+        
+        let time = 0;
+        let renderStartTime = 0;
+        let frameCount = 0;
+        let currentEnergy = 0.3;
+        let currentBass = 0;
+        let spectrumData = new Array(32).fill(0);
+        
+        function setResolution(resKey) {
+            currentRes = resKey;
+            const res = resolutions[resKey];
+            canvasWidth = res.width;
+            canvasHeight = res.height;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            document.querySelectorAll('.res-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.res === resKey) btn.classList.add('active');
+            });
+            statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> Resolusi: ${res.name} (${canvasWidth}x${canvasHeight})`;
+        }
+        
+        document.querySelectorAll('.res-btn').forEach(btn => {
+            btn.addEventListener('click', () => setResolution(btn.dataset.res));
+        });
+        setResolution('tiktok');
+        
+        intensitySlider.addEventListener('input', (e) => {
+            effectIntensity = parseInt(e.target.value);
+            intensityVal.innerText = effectIntensity;
+        });
+        
+        audioFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            audioNameSpan.innerHTML = `<i class="fa fa-music"></i> ${file.name.substring(0, 35)}`;
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading MP3...`;
+            statusDiv.className = "status loading";
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                audioFileData = arrayBuffer;
+                
+                const tempContext = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await tempContext.decodeAudioData(arrayBuffer.slice(0));
+                audioDuration = audioBuffer.duration;
+                await tempContext.close();
+                
+                const minutes = Math.floor(audioDuration / 60);
+                const seconds = Math.floor(audioDuration % 60);
+                durationInfo.innerHTML = `<i class="fa fa-hourglass-half"></i> Durasi: ${minutes}:${seconds.toString().padStart(2,'0')}`;
+                
+                // CEK BATASAN DURASI
+                if (audioDuration > MAX_DURATION_SECONDS) {
+                    statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Maaf, durasi maksimal ${MAX_DURATION_MINUTES} menit. Lagu Anda ${minutes} menit. Silakan potong lagu terlebih dahulu.`;
+                    statusDiv.className = "status error";
+                    saveBtn.disabled = true;
+                    return;
+                }
+                
+                statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> MP3 siap (${minutes}:${seconds.toString().padStart(2,'0')}) - Klik RENDER`;
+                statusDiv.className = "status";
+                saveBtn.disabled = false;
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Gagal: ${err.message}`;
+                statusDiv.className = "status error";
+                saveBtn.disabled = true;
+            }
+        });
+        
+        async function createNewAudioForRender() {
+            if (!audioFileData) throw new Error("No audio data");
+            
+            if (audioContext) await audioContext.close();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 512;
+            
+            const blob = new Blob([audioFileData], { type: 'audio/mpeg' });
+            const url = URL.createObjectURL(blob);
+            const newAudioElement = new Audio(url);
+            newAudioElement.crossOrigin = "anonymous";
+            newAudioElement.loop = false;
+            newAudioElement.volume = 1;
+            
+            sourceNode = audioContext.createMediaElementSource(newAudioElement);
+            sourceNode.connect(analyserNode);
+            analyserNode.connect(audioContext.destination);
+            
+            if (audioContext.state === 'suspended') await audioContext.resume();
+            return newAudioElement;
+        }
+        
+        function updateAudioEnergy(audioElement) {
+            if (!analyserNode || !audioElement || audioElement.paused || !audioElement.currentTime) {
+                currentEnergy = 0.4 + Math.sin(time * 2.5) * 0.15;
+                currentBass = 0.3 + Math.sin(time * 4) * 0.12;
+                for (let i = 0; i < spectrumData.length; i++) {
+                    spectrumData[i] = 0.3 + Math.sin(time * 3 + i * 0.4) * 0.2;
+                }
+                return;
+            }
+            const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+            analyserNode.getByteFrequencyData(dataArray);
+            
+            let bassSum = 0;
+            for (let i = 0; i < Math.min(20, dataArray.length); i++) bassSum += dataArray[i];
+            currentBass = Math.min(0.9, (bassSum / (20 * 255)) * 1.3);
+            
+            let totalSum = 0;
+            for (let i = 0; i < dataArray.length; i++) totalSum += dataArray[i];
+            currentEnergy = Math.min(0.9, (totalSum / (dataArray.length * 255)) * 1.5);
+            
+            const step = Math.floor(dataArray.length / spectrumData.length);
+            for (let i = 0; i < spectrumData.length; i++) {
+                let sum = 0, count = 0;
+                for (let j = 0; j < step && i*step + j < dataArray.length; j++) {
+                    sum += dataArray[i*step + j];
+                    count++;
+                }
+                spectrumData[i] = Math.min(0.9, (sum / (count * 255)) * 1.2);
+            }
+        }
+        
+        function drawCircleSpectrum(centerX, centerY, radius, energy, bass, spectrum) {
+            const intensity = effectIntensity / 15;
+            const isDark = currentTheme === "dark";
+            
+            if (isDark) {
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = `rgba(255, 255, 255, ${0.5 + bass * 0.5})`;
+            } else {
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = `rgba(255, 70, 140, ${0.5 + bass * 0.5})`;
+            }
+            
+            const pulseRadius = radius * (0.85 + bass * 0.25);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, pulseRadius, 0, Math.PI * 2);
+            
+            if (isDark) {
+                const grad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, pulseRadius);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${0.3 + bass * 0.3})`);
+                grad.addColorStop(0.5, `rgba(150, 150, 150, ${0.2 + energy * 0.2})`);
+                grad.addColorStop(1, `rgba(50, 50, 50, 0.1)`);
+                ctx.fillStyle = grad;
+            } else {
+                const grad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, pulseRadius);
+                grad.addColorStop(0, `rgba(255, 50, 100, ${0.5 + bass * 0.5})`);
+                grad.addColorStop(0.5, `rgba(0, 200, 255, ${0.35 + energy * 0.35})`);
+                grad.addColorStop(1, `rgba(255, 50, 100, 0.15)`);
+                ctx.fillStyle = grad;
+            }
+            ctx.fill();
+            
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, ${0.5 + bass * 0.3})` : `rgba(255, 255, 255, ${0.7 + bass * 0.3})`;
+            ctx.lineWidth = 3 + bass * 5;
+            ctx.stroke();
+            
+            const barCount = Math.min(spectrum.length, 36);
+            const angleStep = (Math.PI * 2) / barCount;
+            for (let i = 0; i < barCount; i++) {
+                const barHeight = 8 + (spectrum[i % spectrum.length] * 40 * intensity);
+                const angle = i * angleStep - Math.PI / 2;
+                const x1 = centerX + (radius - 8) * Math.cos(angle);
+                const y1 = centerY + (radius - 8) * Math.sin(angle);
+                const x2 = centerX + (radius + barHeight) * Math.cos(angle);
+                const y2 = centerY + (radius + barHeight) * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = 5;
+                if (isDark) {
+                    const brightness = 100 + 155 * spectrum[i % spectrum.length];
+                    ctx.strokeStyle = `rgb(${brightness}, ${brightness}, ${brightness})`;
+                } else {
+                    const hue = (time * 40 + i * 20) % 360;
+                    ctx.strokeStyle = `hsl(${hue}, 85%, 65%)`;
+                }
+                ctx.stroke();
+            }
+            
+            const innerRadius = radius * 0.55;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+            ctx.fillStyle = isDark ? `rgba(0, 0, 0, 0.75)` : `rgba(0, 0, 0, 0.65)`;
+            ctx.fill();
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, 0.6)` : `rgba(255, 255, 255, 0.5)`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // TEKS TENGAH (DOUYIN LIKE)
+            ctx.font = `bold ${Math.min(42, 32 + bass * 14)}px "Segoe UI", "Poppins"`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = `white`;
+            ctx.shadowBlur = isDark ? 20 : 15;
+            ctx.shadowColor = isDark ? `rgba(255, 255, 255, 0.8)` : "#ff3b6f";
+            ctx.fillText(customCenterText, centerX, centerY);
+            
+            ctx.shadowBlur = 0;
+        }
+        
+        function drawFullEffect(energy, bass, spectrum, progress) {
+            const w = canvasWidth, h = canvasHeight;
+            const t = time;
+            const intensity = effectIntensity / 12;
+            const react = energy * intensity * 1.2;
+            const isDark = currentTheme === "dark";
+            
+            const shakeX = Math.sin(t * 35) * (react * 2) + Math.sin(t * 18) * (react);
+            const shakeY = Math.cos(t * 32) * (react * 1.5);
+            
+            ctx.save();
+            ctx.clearRect(0, 0, w, h);
+            ctx.translate(shakeX, shakeY);
+            
+            if (isDark) {
+                const grad = ctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, `#0a0a0a`);
+                grad.addColorStop(0.5, `#111111`);
+                grad.addColorStop(1, `#050505`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+                ctx.strokeStyle = `rgba(255, 255, 255, 0.05)`;
+                ctx.lineWidth = 1;
+                for (let i = 0; i < w; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, h);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(w, i);
+                    ctx.stroke();
+                }
+            } else {
+                const hue = (t * 40 + energy * 200 + progress * 100) % 360;
+                const grad = ctx.createLinearGradient(w/2 + Math.sin(t)*20, h/2 + Math.cos(t*0.7)*15, w/2 + Math.cos(t)*30, h/2 + Math.sin(t*0.5)*25);
+                grad.addColorStop(0, `hsl(${hue}, 85%, 50%)`);
+                grad.addColorStop(0.6, `hsl(${hue + 80}, 80%, 40%)`);
+                grad.addColorStop(1, `hsl(${hue + 160}, 90%, 30%)`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+            }
+            
+            const barCount = Math.min(30, Math.floor(w / 30));
+            for (let i = 0; i < barCount; i++) {
+                const barH = 5 + Math.sin(t * 12 + i) * 6 + energy * 25;
+                const x = i * (w / barCount) + t * 20 % (w / barCount);
+                if (isDark) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.1 + energy * 0.15})`;
+                } else {
+                    const hue = (t * 40 + i * 15) % 360;
+                    ctx.fillStyle = `hsla(${hue}, 85%, 65%, 0.45)`;
+                }
+                ctx.fillRect(x, h/2 - barH/2 + Math.sin(t*8 + i)*4, Math.max(5, w/barCount - 2), barH);
+            }
+            
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const circleRadius = Math.min(w, h) * 0.28;
+            drawCircleSpectrum(centerX, centerY, circleRadius, energy, bass, spectrum);
+            
+            const fontSize = Math.min(58, 42 + energy * 16);
+            ctx.font = `bold ${fontSize}px "Segoe UI", "Poppins"`;
+            ctx.textAlign = "center";
+            const textX = w/2 + Math.sin(t * 22) * (react * 0.8);
+            const textY = h * 0.12 + Math.cos(t * 19) * (react * 0.5);
+            const offset = intensity * 0.3 + energy * 12;
+            
+            ctx.shadowBlur = 12;
+            if (isDark) {
+                ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
+                ctx.fillText(customMainText, textX - offset/2, textY);
+                ctx.fillStyle = `rgba(200, 200, 200, 0.8)`;
+                ctx.fillText(customMainText, textX + offset/2, textY);
+                ctx.fillStyle = `white`;
+                ctx.shadowColor = `rgba(255, 255, 255, 0.6)`;
+                ctx.fillText(customMainText, textX, textY);
+            } else {
+                ctx.fillStyle = `rgba(255, 40, 80, 0.8)`;
+                ctx.fillText(customMainText, textX - offset, textY);
+                ctx.fillStyle = `rgba(0, 230, 250, 0.8)`;
+                ctx.fillText(customMainText, textX + offset, textY);
+                ctx.fillStyle = `white`;
+                ctx.shadowColor = "#ff3b6f";
+                ctx.fillText(customMainText, textX, textY);
+            }
+            
+            const subFontSize = Math.min(26, 18 + energy * 8);
+            ctx.font = `bold ${subFontSize}px "Segoe UI", "Poppins"`;
+            if (isDark) {
+                ctx.fillStyle = `rgba(255, 255, 255, 0.7)`;
+                ctx.shadowColor = `rgba(255, 255, 255, 0.4)`;
+            } else {
+                const hue = (t * 40 + energy * 100) % 360;
+                ctx.fillStyle = `hsl(${hue + 40}, 100%, 70%)`;
+            }
+            ctx.fillText(customSubText, textX + Math.sin(t*15)*3, textY + fontSize * 0.7);
+            
+            const particleCount = Math.min(35, 15 + energy * 25);
+            for (let p = 0; p < particleCount; p++) {
+                const angle = t * 3 + p;
+                const rad = circleRadius + 35 + bass * 40;
+                const xOff = Math.sin(angle) * rad;
+                const yOff = Math.cos(angle * 1.3) * rad * 0.7;
+                if (isDark) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + energy * 0.3})`;
+                } else {
+                    ctx.fillStyle = `hsla(${Date.now() * 0.005 + p * 30}, 100%, 65%, 0.6)`;
+                }
+                ctx.fillText("✦", w/2 + xOff, h/2 + yOff);
+            }
+            ctx.restore();
+            
+            ctx.globalCompositeOperation = 'lighter';
+            if (isDark) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.05 + bass * 0.1})`;
+            } else {
+                ctx.fillStyle = `rgba(255, 60, 120, ${0.12 + bass * 0.28})`;
+            }
+            ctx.fillRect(0, 0, w, h);
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        let currentAudioElement = null;
+        
+        function startRenderLoop(durationMs, audioEl) {
+            renderStartTime = performance.now();
+            frameCount = 0;
+            
+            function renderFrame(now) {
+                if (!isRendering) return;
+                const elapsed = now - renderStartTime;
+                const progress = Math.min(1, elapsed / durationMs);
+                updateAudioEnergy(audioEl);
+                drawFullEffect(currentEnergy, currentBass, spectrumData, progress);
+                time += 0.02;
+                frameCount++;
+                
+                const percent = progress * 100;
+                progressFill.style.width = `${percent}%`;
+                const currentSec = Math.floor(progress * audioDuration);
+                const currentFps = Math.round(frameCount / (elapsed / 1000));
+                progressText.innerHTML = `<i class="fa fa-cog fa-spin"></i> ${Math.floor(percent)}% (${currentSec}/${Math.floor(audioDuration)}s) | ${currentFps} fps`;
+                
+                if (progress < 1 && isRendering) {
+                    renderAnimationId = requestAnimationFrame(renderFrame);
+                } else if (progress >= 1 && isRendering) {
+                    finishRendering();
+                }
+            }
+            renderAnimationId = requestAnimationFrame(renderFrame);
+        }
+        
+        async function startRender() {
+            if (!audioFileData || !audioDuration) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Upload MP3 dulu! (max ${MAX_DURATION_MINUTES} menit)`;
+                statusDiv.className = "status error";
+                return;
+            }
+            if (isRendering) return;
+            
+            isRendering = true;
+            saveBtn.disabled = true;
+            saveBtn.classList.add('rendering');
+            progressContainer.style.display = "block";
+            progressFill.style.width = "0%";
+            
+            const res = resolutions[currentRes];
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Rendering ${res.name}...`;
+            statusDiv.className = "status rendering";
+            time = 0;
+            frameCount = 0;
+            
+            try {
+                const newAudioElement = await createNewAudioForRender();
+                currentAudioElement = newAudioElement;
+                newAudioElement.volume = 1;
+                newAudioElement.currentTime = 0;
+                
+                canvasStream = canvas.captureStream(selectedFps);
+                
+                let audioStream = null;
+                if (audioContext && sourceNode) {
+                    const dest = audioContext.createMediaStreamDestination();
+                    sourceNode.connect(dest);
+                    audioStream = dest.stream;
+                }
+                
+                let tracks = [...canvasStream.getVideoTracks()];
+                if (audioStream) tracks = tracks.concat(audioStream.getAudioTracks());
+                const combinedStream = new MediaStream(tracks);
+                
+                mediaRecorder = new MediaRecorder(combinedStream, { 
+                    mimeType: 'video/webm',
+                    videoBitsPerSecond: 8000000,
+                    audioBitsPerSecond: 128000
+                });
+                recordedChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) recordedChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const songName = audioFileInput.files[0]?.name.replace('.mp3', '') || 'douyinlike';
+                    const resName = resolutions[currentRes].name.toLowerCase();
+                    const themeName = currentTheme === 'dark' ? 'dark' : 'colorful';
+                    a.download = `${songName}_${themeName}_${resName}.webm`;
+                    a.href = url;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    const fileSizeMB = (blob.size / 1024 / 1024).toFixed(2);
+                    statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> Selesai! ${fileSizeMB} MB - Durasi ${Math.floor(audioDuration/60)}:${Math.floor(audioDuration%60)}`;
+                    statusDiv.className = "status success";
+                    progressContainer.style.display = "none";
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('rendering');
+                    isRendering = false;
+                    if (canvasStream) canvasStream.getTracks().forEach(track => track.stop());
+                    if (newAudioElement.src) URL.revokeObjectURL(newAudioElement.src);
+                };
+                
+                mediaRecorder.start(100);
+                await newAudioElement.play();
+                
+                const durationMs = audioDuration * 1000;
+                startRenderLoop(durationMs, newAudioElement);
+                
+                recordingTimeout = setTimeout(() => {
+                    if (isRendering && mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                    }
+                }, durationMs + 500);
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Error: ${err.message}`;
+                statusDiv.className = "status error";
+                cancelRender();
+            }
+        }
+        
+        function finishRendering() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+            }
+        }
+        
+        function cancelRender() {
+            if (isRendering) {
+                if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+                isRendering = false;
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('rendering');
+                progressContainer.style.display = "none";
+                if (currentAudioElement) {
+                    currentAudioElement.pause();
+                    if (currentAudioElement.src) URL.revokeObjectURL(currentAudioElement.src);
+                }
+                if (audioContext) audioContext.close();
+            }
+        }
+        
+        saveBtn.onclick = startRender;
+        
+        canvas.addEventListener('click', () => {
+            if (!isRendering && navigator.vibrate) navigator.vibrate(80);
+        });
+        
+        function idleAnimate() {
+            if (!isRendering) {
+                currentEnergy = 0.4 + Math.sin(time * 2) * 0.2;
+                currentBass = 0.3 + Math.sin(time * 3) * 0.15;
+                for (let i = 0; i < spectrumData.length; i++) {
+                    spectrumData[i] = 0.3 + Math.sin(time * 4 + i * 0.5) * 0.2;
+                }
+                drawFullEffect(currentEnergy, currentBass, spectrumData, 0);
+                time += 0.03;
+            }
+            requestAnimationFrame(idleAnimate);
+        }
+        
+        idleAnimate();
+    })();
+</script>
+</body>
+</html>
