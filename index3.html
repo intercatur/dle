@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Douyin Like Effect - Triangle Spectrum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #03050b 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 25px; }
+        .title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00f2fe, #ff0040, #ffb347);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradienGerak 2s ease infinite;
+        }
+        @keyframes gradienGerak {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background: rgba(10, 20, 30, 0.6);
+            backdrop-filter: blur(14px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .canvas-wrapper { text-align: center; }
+        canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 15px 35px rgba(0,0,0,0.5);
+            cursor: pointer;
+            background: #000;
+        }
+        .upload-area { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: center; }
+        .file-label {
+            background: linear-gradient(95deg, #2a2f3f, #1a1f2e);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .file-label:hover { background: linear-gradient(95deg, #3a3f4f, #2a2f3e); transform: scale(1.02); }
+        #audioName { color: #ffb347; font-size: 0.9rem; background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 50px; }
+        
+        .theme-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0 10px;
+            flex-wrap: wrap;
+        }
+        .theme-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .theme-btn i { margin-right: 6px; }
+        .theme-btn:hover { transform: translateY(-2px); background: rgba(50, 55, 70, 0.9); }
+        .theme-btn.active {
+            background: linear-gradient(95deg, #ff0040, #ff7a00);
+            border-color: #ff7a00;
+            box-shadow: 0 0 15px rgba(255,0,64,0.3);
+        }
+        
+        .effect-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 10px 0 15px;
+        }
+        .effect-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+        .effect-btn i { margin-right: 5px; font-size: 0.7rem; }
+        .effect-btn:hover { transform: translateY(-2px); background: rgba(50, 55, 70, 0.9); }
+        .effect-btn.active {
+            background: linear-gradient(95deg, #ff0040, #ff7a00);
+            border-color: #ff7a00;
+            box-shadow: 0 0 15px rgba(255,0,64,0.3);
+        }
+        
+        .res-selector { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 15px 0; }
+        .res-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .res-btn i { margin-right: 6px; }
+        .res-btn:hover { background: rgba(50, 55, 70, 0.9); transform: translateY(-2px); }
+        .res-btn.active { background: linear-gradient(95deg, #ff0040, #ff7a00); border-color: #ff7a00; box-shadow: 0 0 15px rgba(255,0,64,0.3); }
+        .res-name { font-weight: bold; font-size: 0.9rem; color: white; }
+        .res-detail { font-size: 0.65rem; color: #aaa; }
+        
+        .text-input-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .text-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .text-input-group label {
+            color: #ffd966;
+            font-weight: 600;
+            min-width: 110px;
+        }
+        .text-input-group label i { margin-right: 8px; }
+        .text-input-group input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .text-input-group input:focus {
+            outline: none;
+            border-color: #ff0040;
+            box-shadow: 0 0 10px rgba(255,0,64,0.3);
+        }
+        
+        .controls { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 20px 0 15px; }
+        button {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .btn-save {
+            background: linear-gradient(95deg, #ff0040, #ff7a00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,0,64,0.3);
+        }
+        .btn-save i { margin-right: 8px; }
+        .btn-save:hover:not(:disabled) { transform: scale(1.03); box-shadow: 0 6px 25px rgba(255,0,64,0.6); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-save.rendering { animation: pulseOrange 1s infinite; }
+        @keyframes pulseOrange {
+            0% { box-shadow: 0 0 0 0 rgba(255,64,0,0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(255,64,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,64,0,0); }
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 50px;
+            background: rgba(0,0,0,0.5);
+            color: #ddd;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status.loading { background: rgba(0,100,200,0.3); color: #88ccff; }
+        .status.rendering { background: rgba(255,100,0,0.3); color: #ffaa66; }
+        .status.success { background: rgba(0,200,100,0.3); color: #88ffaa; }
+        .status.error { background: rgba(200,0,0,0.3); color: #ff8888; }
+        
+        .slider-group { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 15px 0; flex-wrap: wrap; }
+        .slider-group span { color: #ffd966; }
+        .slider-group span i { margin-right: 6px; }
+        input[type="range"] {
+            width: 200px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #ff0040, #00f2fe);
+            border-radius: 10px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #ff3b6f;
+            cursor: pointer;
+        }
+        .fps-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+        }
+        .fps-group label {
+            color: white;
+            cursor: pointer;
+        }
+        .fps-group input {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .progress-container { width: 100%; margin-top: 15px; display: none; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #ff0040, #ffb347); width: 0%; transition: width 0.1s linear; border-radius: 10px; }
+        .progress-text { text-align: center; font-size: 0.8rem; margin-top: 8px; color: #ffaa66; }
+        .duration-info { text-align: center; font-size: 0.8rem; margin-top: 8px; color: #aaa; }
+        
+        @media (max-width: 700px) {
+            .title { font-size: 1.6rem; }
+            button { padding: 10px 20px; font-size: 0.9rem; }
+            .res-btn { padding: 6px 12px; }
+            .res-name { font-size: 0.75rem; }
+            .res-detail { font-size: 0.55rem; }
+            .text-input-group { flex-direction: column; align-items: stretch; }
+            .text-input-group label { min-width: auto; }
+            .effect-btn { padding: 4px 10px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 class="title"><i class="fa fa-bolt"></i> DOUYIN LIKE EFFECT <i class="fa fa-bolt"></i></h1>
+    </div>
+
+    <div class="card">
+        <div class="canvas-wrapper">
+            <canvas id="douyinCanvas" width="1080" height="1920" style="width:100%; height:auto; max-width:400px; margin:0 auto; display:block"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="upload-area">
+            <label class="file-label">
+                <i class="fa fa-music"></i> Upload MP3
+                <input type="file" id="audioFile" accept="audio/mpeg,audio/mp3,audio/*" style="display:none">
+            </label>
+            <span id="audioName"><i class="fa fa-headphones"></i> Belum ada musik</span>
+        </div>
+
+        <div class="theme-selector">
+            <div class="theme-btn active" data-theme="colorful"><i class="fa fa-paint-brush"></i> Colorful</div>
+            <div class="theme-btn" data-theme="dark"><i class="fa fa-moon-o"></i> Dark Glow</div>
+        </div>
+
+        <div class="effect-selector">
+            <div class="effect-btn active" data-effect="default"><i class="fa fa-circle-o"></i> Default</div>
+            <div class="effect-btn" data-effect="glitch"><i class="fa fa-random"></i> Glitch</div>
+            <div class="effect-btn" data-effect="neon"><i class="fa fa-bolt"></i> Neon</div>
+            <div class="effect-btn" data-effect="hologram"><i class="fa fa-cube"></i> Hologram</div>
+            <div class="effect-btn" data-effect="fire"><i class="fa fa-fire"></i> Fire</div>
+            <div class="effect-btn" data-effect="ice"><i class="fa fa-snowflake-o"></i> Ice</div>
+            <div class="effect-btn" data-effect="retro"><i class="fa fa-film"></i> Retro</div>
+        </div>
+
+        <div class="text-input-area">
+            <div class="text-input-group">
+                <label><i class="fa fa-text-height"></i> Teks Atas:</label>
+                <input type="text" id="mainTextInput" value="⚡ VIRAL ⚡" maxlength="30">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-circle-o"></i> Teks Tengah:</label>
+                <input type="text" id="centerTextInput" value="DOUYIN LIKE" maxlength="20">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-hashtag"></i> Teks Bawah:</label>
+                <input type="text" id="subTextInput" value="#DouyinLike" maxlength="40">
+            </div>
+        </div>
+
+        <div class="res-selector">
+            <div class="res-btn" data-res="youtube"><i class="fa fa-youtube-play"></i><div class="res-name">YouTube</div><div class="res-detail">1920x1080</div></div>
+            <div class="res-btn" data-res="instagram"><i class="fa fa-instagram"></i><div class="res-name">Instagram Feed</div><div class="res-detail">1080x1080</div></div>
+            <div class="res-btn" data-res="instagram-story"><i class="fa fa-instagram"></i><div class="res-name">IG Story</div><div class="res-detail">1080x1920</div></div>
+            <div class="res-btn active" data-res="tiktok"><i class="fa fa-music"></i><div class="res-name">TikTok</div><div class="res-detail">1080x1920</div></div>
+            <div class="res-btn" data-res="square"><i class="fa fa-square-o"></i><div class="res-name">Square</div><div class="res-detail">800x800</div></div>
+        </div>
+
+        <div class="controls">
+            <button id="saveBtn" class="btn-save" disabled><i class="fa fa-floppy-o"></i> RENDER & SAVE WEBM</button>
+        </div>
+
+        <div class="slider-group">
+            <div class="fps-group">
+                <span><i class="fa fa-video-camera"></i> FPS:</span>
+                <label><input type="radio" name="fps" value="24"> 24</label>
+                <label><input type="radio" name="fps" value="30" checked> 30</label>
+                <label><input type="radio" name="fps" value="60"> 60</label>
+            </div>
+        </div>
+        <div class="slider-group">
+            <span><i class="fa fa-flash"></i> Intensitas</span>
+            <input type="range" id="intensitySlider" min="0" max="30" value="15">
+            <span id="intensityVal">15</span>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText">Memproses...</div>
+            <div class="duration-info" id="durationInfo"></div>
+        </div>
+
+        <div id="status" class="status"><i class="fa fa-info-circle"></i> Upload MP3 (max 10 menit), atur teks, efek & tema, lalu RENDER</div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ==================== BATASAN DURASI ====================
+        const MAX_DURATION_SECONDS = 600;
+        
+        const resolutions = {
+            youtube: { width: 1920, height: 1080, name: "YouTube" },
+            instagram: { width: 1080, height: 1080, name: "Instagram" },
+            "instagram-story": { width: 1080, height: 1920, name: "IGStory" },
+            tiktok: { width: 1080, height: 1920, name: "TikTok" },
+            square: { width: 800, height: 800, name: "Square" }
+        };
+        
+        let currentRes = "tiktok";
+        let canvasWidth = 1080;
+        let canvasHeight = 1920;
+        
+        const canvas = document.getElementById('douyinCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let currentTheme = "colorful";
+        let currentEffect = "default";
+        
+        const mainTextInput = document.getElementById('mainTextInput');
+        const centerTextInput = document.getElementById('centerTextInput');
+        const subTextInput = document.getElementById('subTextInput');
+        let customMainText = "⚡ VIRAL ⚡";
+        let customCenterText = "DOUYIN LIKE";
+        let customSubText = "#DouyinLike";
+        
+        mainTextInput.addEventListener('input', (e) => { customMainText = e.target.value || "⚡ VIRAL ⚡"; });
+        centerTextInput.addEventListener('input', (e) => { customCenterText = e.target.value || "DOUYIN LIKE"; });
+        subTextInput.addEventListener('input', (e) => { customSubText = e.target.value || "#DouyinLike"; });
+        
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.theme === theme) btn.classList.add('active');
+            });
+        }
+        
+        function setEffect(effect) {
+            currentEffect = effect;
+            document.querySelectorAll('.effect-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.effect === effect) btn.classList.add('active');
+            });
+        }
+        
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+        });
+        
+        document.querySelectorAll('.effect-btn').forEach(btn => {
+            btn.addEventListener('click', () => setEffect(btn.dataset.effect));
+        });
+        
+        let audioFileData = null;
+        let audioDuration = 0;
+        let isRendering = false;
+        let audioContext = null;
+        let analyserNode = null;
+        let sourceNode = null;
+        
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let canvasStream = null;
+        let recordingTimeout = null;
+        let renderAnimationId = null;
+        
+        const intensitySlider = document.getElementById('intensitySlider');
+        const intensityVal = document.getElementById('intensityVal');
+        let effectIntensity = 15;
+        
+        let selectedFps = 30;
+        document.querySelectorAll('input[name="fps"]').forEach(radio => {
+            radio.addEventListener('change', (e) => { 
+                if (e.target.checked) selectedFps = parseInt(e.target.value);
+            });
+        });
+        
+        const audioFileInput = document.getElementById('audioFile');
+        const audioNameSpan = document.getElementById('audioName');
+        const saveBtn = document.getElementById('saveBtn');
+        const statusDiv = document.getElementById('status');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const durationInfo = document.getElementById('durationInfo');
+        
+        let time = 0;
+        let renderStartTime = 0;
+        let frameCount = 0;
+        let currentEnergy = 0.3;
+        let currentBass = 0;
+        let spectrumData = new Array(36).fill(0);
+        
+        function setResolution(resKey) {
+            currentRes = resKey;
+            const res = resolutions[resKey];
+            canvasWidth = res.width;
+            canvasHeight = res.height;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            document.querySelectorAll('.res-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.res === resKey) btn.classList.add('active');
+            });
+        }
+        
+        document.querySelectorAll('.res-btn').forEach(btn => {
+            btn.addEventListener('click', () => setResolution(btn.dataset.res));
+        });
+        setResolution('tiktok');
+        
+        intensitySlider.addEventListener('input', (e) => {
+            effectIntensity = parseInt(e.target.value);
+            intensityVal.innerText = effectIntensity;
+        });
+        
+        audioFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            audioNameSpan.innerHTML = `<i class="fa fa-music"></i> ${file.name.substring(0, 35)}`;
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading MP3...`;
+            statusDiv.className = "status loading";
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                audioFileData = arrayBuffer;
+                
+                const tempContext = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await tempContext.decodeAudioData(arrayBuffer.slice(0));
+                audioDuration = audioBuffer.duration;
+                await tempContext.close();
+                
+                const minutes = Math.floor(audioDuration / 60);
+                const seconds = Math.floor(audioDuration % 60);
+                durationInfo.innerHTML = `<i class="fa fa-hourglass-half"></i> Durasi: ${minutes}:${seconds.toString().padStart(2,'0')}`;
+                
+                if (audioDuration > MAX_DURATION_SECONDS) {
+                    statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Maaf, durasi maksimal 10 menit.`;
+                    statusDiv.className = "status error";
+                    saveBtn.disabled = true;
+                    return;
+                }
+                
+                statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> MP3 siap! Klik RENDER`;
+                statusDiv.className = "status";
+                saveBtn.disabled = false;
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Gagal: ${err.message}`;
+                statusDiv.className = "status error";
+                saveBtn.disabled = true;
+            }
+        });
+        
+        async function createNewAudioForRender() {
+            if (!audioFileData) throw new Error("No audio data");
+            if (audioContext) await audioContext.close();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyserNode = audioContext.createAnalyser();
+            analyserNode.fftSize = 512;
+            const blob = new Blob([audioFileData], { type: 'audio/mpeg' });
+            const url = URL.createObjectURL(blob);
+            const newAudioElement = new Audio(url);
+            newAudioElement.crossOrigin = "anonymous";
+            newAudioElement.loop = false;
+            newAudioElement.volume = 1;
+            sourceNode = audioContext.createMediaElementSource(newAudioElement);
+            sourceNode.connect(analyserNode);
+            analyserNode.connect(audioContext.destination);
+            if (audioContext.state === 'suspended') await audioContext.resume();
+            return newAudioElement;
+        }
+        
+        function updateAudioEnergy(audioElement) {
+            if (!analyserNode || !audioElement || audioElement.paused || !audioElement.currentTime) {
+                currentEnergy = 0.4 + Math.sin(time * 2.5) * 0.15;
+                currentBass = 0.3 + Math.sin(time * 4) * 0.12;
+                for (let i = 0; i < spectrumData.length; i++) {
+                    spectrumData[i] = 0.3 + Math.sin(time * 3 + i * 0.15) * 0.2;
+                }
+                return;
+            }
+            const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+            analyserNode.getByteFrequencyData(dataArray);
+            let bassSum = 0;
+            for (let i = 0; i < Math.min(20, dataArray.length); i++) bassSum += dataArray[i];
+            currentBass = Math.min(0.9, (bassSum / (20 * 255)) * 1.3);
+            let totalSum = 0;
+            for (let i = 0; i < dataArray.length; i++) totalSum += dataArray[i];
+            currentEnergy = Math.min(0.9, (totalSum / (dataArray.length * 255)) * 1.5);
+            const step = Math.floor(dataArray.length / spectrumData.length);
+            for (let i = 0; i < spectrumData.length; i++) {
+                let sum = 0, count = 0;
+                for (let j = 0; j < step && i*step + j < dataArray.length; j++) {
+                    sum += dataArray[i*step + j];
+                    count++;
+                }
+                spectrumData[i] = Math.min(0.9, (sum / (count * 255)) * 1.4);
+            }
+        }
+        
+        function getEffectColors(energy, bass, progress, t) {
+            let baseHue, sat, light;
+            switch(currentEffect) {
+                case "glitch": baseHue = (t * 180) % 360; sat = 85; light = 55; break;
+                case "neon": baseHue = (time * 80 + energy * 200) % 360; sat = 90; light = 60 + bass * 20; break;
+                case "hologram": baseHue = (t * 30 + 180) % 360; sat = 70; light = 50 + energy * 20; break;
+                case "fire": baseHue = (20 + energy * 40); sat = 85 + bass * 15; light = 50 + energy * 20; break;
+                case "ice": baseHue = (180 + energy * 60); sat = 80; light = 55 + energy * 15; break;
+                case "retro": baseHue = (t * 50 + 300) % 360; sat = 85; light = 55; break;
+                default: baseHue = (t * 40 + energy * 200 + progress * 100) % 360; sat = 85; light = 50; break;
+            }
+            return { baseHue, sat, light };
+        }
+        
+        // ==================== SEGITIGA SPEKTRUM FULL ====================
+        function drawTriangleSpectrum(centerX, centerY, size, energy, bass, spectrum) {
+            const intensity = effectIntensity / 15;
+            const isDark = currentTheme === "dark";
+            const colors = getEffectColors(energy, bass, 0, time);
+            
+            // Titik sudut segitiga sama sisi
+            const radius = size;
+            const angles = [-Math.PI / 2, Math.PI / 6, Math.PI * 5 / 6]; // Puncak di atas
+            const points = angles.map(angle => ({
+                x: centerX + radius * Math.cos(angle),
+                y: centerY + radius * Math.sin(angle)
+            }));
+            
+            // Gambar segitiga utama (glow)
+            ctx.shadowBlur = isDark ? 20 : 15;
+            ctx.shadowColor = isDark ? `rgba(255, 255, 255, ${0.3 + bass * 0.4})` : `rgba(255, 70, 140, ${0.4 + bass * 0.4})`;
+            
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            ctx.lineTo(points[1].x, points[1].y);
+            ctx.lineTo(points[2].x, points[2].y);
+            ctx.closePath();
+            
+            // Fill segitiga dengan gradien
+            if (isDark) {
+                const grad = ctx.createLinearGradient(centerX, centerY - radius, centerX, centerY + radius);
+                grad.addColorStop(0, `rgba(100, 100, 100, 0.3)`);
+                grad.addColorStop(1, `rgba(30, 30, 30, 0.1)`);
+                ctx.fillStyle = grad;
+            } else {
+                const grad = ctx.createLinearGradient(centerX, centerY - radius, centerX, centerY + radius);
+                grad.addColorStop(0, `hsla(${colors.baseHue}, ${colors.sat}%, ${colors.light}%, 0.4)`);
+                grad.addColorStop(1, `hsla(${colors.baseHue + 80}, ${colors.sat}%, ${colors.light - 20}%, 0.2)`);
+                ctx.fillStyle = grad;
+            }
+            ctx.fill();
+            
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, ${0.4 + bass * 0.3})` : `rgba(255, 255, 255, ${0.5 + bass * 0.3})`;
+            ctx.lineWidth = 3 + bass * 4;
+            ctx.stroke();
+            
+            // ==================== SPEKTRUM BEAT DI SEPANJANG SISI SEGITIGA ====================
+            const barCount = Math.min(spectrum.length, 48);
+            const barsPerSide = Math.floor(barCount / 3);
+            
+            // Fungsi untuk menggambar batang di sepanjang garis
+            function drawBarsOnEdge(p1, p2, startIdx, count, sideEnergy) {
+                const dx = p2.x - p1.x;
+                const dy = p2.y - p1.y;
+                const segmentLength = Math.hypot(dx, dy);
+                const barWidth = Math.max(6, segmentLength / count * 0.8);
+                
+                for (let i = 0; i < count && startIdx + i < spectrum.length; i++) {
+                    const tPos = (i + 0.5) / count;
+                    const barHeight = 6 + (spectrum[startIdx + i] * 45 * intensity * (1 + sideEnergy));
+                    const barX = p1.x + dx * tPos;
+                    const barY = p1.y + dy * tPos;
+                    
+                    // Arah tegak lurus dari sisi segitiga (keluar)
+                    const perpX = -dy / segmentLength;
+                    const perpY = dx / segmentLength;
+                    
+                    const barEndX = barX + perpX * barHeight;
+                    const barEndY = barY + perpY * barHeight;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(barX, barY);
+                    ctx.lineTo(barEndX, barEndY);
+                    ctx.lineWidth = barWidth;
+                    
+                    if (isDark) {
+                        const brightness = 100 + 155 * spectrum[startIdx + i];
+                        ctx.strokeStyle = `rgb(${brightness}, ${brightness}, ${brightness})`;
+                    } else {
+                        const hue = (colors.baseHue + (startIdx + i) * 15) % 360;
+                        ctx.strokeStyle = `hsl(${hue}, ${colors.sat}%, 65%)`;
+                    }
+                    ctx.stroke();
+                }
+            }
+            
+            const sideEnergy1 = spectrum.slice(0, barsPerSide).reduce((a,b) => a + b, 0) / barsPerSide;
+            const sideEnergy2 = spectrum.slice(barsPerSide, barsPerSide*2).reduce((a,b) => a + b, 0) / barsPerSide;
+            const sideEnergy3 = spectrum.slice(barsPerSide*2, barsPerSide*3).reduce((a,b) => a + b, 0) / barsPerSide;
+            
+            drawBarsOnEdge(points[0], points[1], 0, barsPerSide, sideEnergy1);
+            drawBarsOnEdge(points[1], points[2], barsPerSide, barsPerSide, sideEnergy2);
+            drawBarsOnEdge(points[2], points[0], barsPerSide * 2, barsPerSide, sideEnergy3);
+            
+            // ==================== SEGITIGA DALAM (tempat teks) ====================
+            const innerRadius = radius * 0.55;
+            const innerPoints = angles.map(angle => ({
+                x: centerX + innerRadius * Math.cos(angle),
+                y: centerY + innerRadius * Math.sin(angle)
+            }));
+            
+            ctx.beginPath();
+            ctx.moveTo(innerPoints[0].x, innerPoints[0].y);
+            ctx.lineTo(innerPoints[1].x, innerPoints[1].y);
+            ctx.lineTo(innerPoints[2].x, innerPoints[2].y);
+            ctx.closePath();
+            ctx.fillStyle = isDark ? `rgba(0, 0, 0, 0.7)` : `rgba(0, 0, 0, 0.55)`;
+            ctx.fill();
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, 0.5)` : `rgba(255, 255, 255, 0.4)`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Teks DOUYIN LIKE di tengah segitiga
+            ctx.font = `bold ${Math.min(42, 28 + bass * 12)}px "Segoe UI", "Poppins"`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = `white`;
+            ctx.shadowBlur = isDark ? 20 : 12;
+            ctx.shadowColor = isDark ? `rgba(255, 255, 255, 0.8)` : "#ff3b6f";
+            ctx.fillText(customCenterText, centerX, centerY);
+            
+            ctx.shadowBlur = 0;
+        }
+        
+        function drawFullEffect(energy, bass, spectrum, progress) {
+            const w = canvasWidth, h = canvasHeight;
+            const t = time;
+            const intensity = effectIntensity / 12;
+            const react = energy * intensity * 1.2;
+            const isDark = currentTheme === "dark";
+            const colors = getEffectColors(energy, bass, progress, t);
+            
+            const shakeX = Math.sin(t * 35) * (react * 2) + Math.sin(t * 18) * (react);
+            const shakeY = Math.cos(t * 32) * (react * 1.5);
+            
+            ctx.save();
+            ctx.clearRect(0, 0, w, h);
+            ctx.translate(shakeX, shakeY);
+            
+            // BACKGROUND
+            if (isDark) {
+                const grad = ctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, `#0a0a0a`);
+                grad.addColorStop(0.5, `#111111`);
+                grad.addColorStop(1, `#050505`);
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+            } else {
+                const grad = ctx.createLinearGradient(w/2 + Math.sin(t)*20, h/2 + Math.cos(t*0.7)*15, w/2 + Math.cos(t)*30, h/2 + Math.sin(t*0.5)*25);
+                if (currentEffect === "fire") {
+                    grad.addColorStop(0, `#ff4d00`);
+                    grad.addColorStop(0.5, `#ff0000`);
+                    grad.addColorStop(1, `#8b0000`);
+                } else if (currentEffect === "ice") {
+                    grad.addColorStop(0, `#00bfff`);
+                    grad.addColorStop(0.5, `#1e90ff`);
+                    grad.addColorStop(1, `#000080`);
+                } else if (currentEffect === "retro") {
+                    grad.addColorStop(0, `#ff00ff`);
+                    grad.addColorStop(0.5, `#00ffff`);
+                    grad.addColorStop(1, `#ff1493`);
+                } else {
+                    grad.addColorStop(0, `hsl(${colors.baseHue}, ${colors.sat}%, ${colors.light}%)`);
+                    grad.addColorStop(0.6, `hsl(${colors.baseHue + 80}, ${colors.sat}%, ${colors.light - 10}%)`);
+                    grad.addColorStop(1, `hsl(${colors.baseHue + 160}, ${colors.sat}%, ${colors.light - 20}%)`);
+                }
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+            }
+            
+            // Grid untuk retro
+            if (currentEffect === "retro") {
+                ctx.strokeStyle = `rgba(255, 0, 255, 0.15)`;
+                ctx.lineWidth = 1;
+                for (let i = 0; i < w; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, h);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(w, i);
+                    ctx.stroke();
+                }
+            }
+            
+            // Equalizer background
+            const barCount = Math.min(30, Math.floor(w / 30));
+            for (let i = 0; i < barCount; i++) {
+                const barH = 5 + Math.sin(t * 12 + i) * 6 + energy * 25;
+                const x = i * (w / barCount) + t * 20 % (w / barCount);
+                if (isDark) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${0.1 + energy * 0.15})`;
+                } else {
+                    ctx.fillStyle = `hsla(${colors.baseHue + i * 15}, ${colors.sat}%, ${colors.light + 15}%, 0.45)`;
+                }
+                ctx.fillRect(x, h/2 - barH/2 + Math.sin(t*8 + i)*4, Math.max(5, w/barCount - 2), barH);
+            }
+            
+            // SEGITIGA SPEKTRUM DI TENGAH
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const triangleSize = Math.min(w, h) * 0.32;
+            drawTriangleSpectrum(centerX, centerY, triangleSize, energy, bass, spectrum);
+            
+            // Scanline untuk hologram
+            if (currentEffect === "hologram") {
+                const lineHeight = 4;
+                for (let y = 0; y < h; y += lineHeight * 2) {
+                    ctx.fillStyle = `rgba(100, 150, 255, ${0.05 + energy * 0.05})`;
+                    ctx.fillRect(0, y, w, lineHeight);
+                }
+            }
+            
+            // TEKS ATAS
+            const fontSize = Math.min(58, 42 + energy * 16);
+            ctx.font = `bold ${fontSize}px "Segoe UI", "Poppins"`;
+            ctx.textAlign = "center";
+            const textX = w/2 + Math.sin(t * 22) * (react * 0.8);
+            const textY = h * 0.12 + Math.cos(t * 19) * (react * 0.5);
+            const offset = intensity * 0.3 + energy * 12;
+            
+            ctx.shadowBlur = 12;
+            if (isDark) {
+                ctx.fillStyle = `rgba(255, 255, 255, 0.8)`;
+                ctx.fillText(customMainText, textX - offset/2, textY);
+                ctx.fillStyle = `rgba(200, 200, 200, 0.8)`;
+                ctx.fillText(customMainText, textX + offset/2, textY);
+                ctx.fillStyle = `white`;
+                ctx.shadowColor = `rgba(255, 255, 255, 0.6)`;
+                ctx.fillText(customMainText, textX, textY);
+            } else {
+                ctx.fillStyle = `rgba(255, 40, 80, 0.8)`;
+                ctx.fillText(customMainText, textX - offset, textY);
+                ctx.fillStyle = `rgba(0, 230, 250, 0.8)`;
+                ctx.fillText(customMainText, textX + offset, textY);
+                ctx.fillStyle = `white`;
+                ctx.shadowColor = `rgba(255, 50, 100, 0.6)`;
+                ctx.fillText(customMainText, textX, textY);
+            }
+            
+            // TEKS BAWAH
+            const subFontSize = Math.min(26, 18 + energy * 8);
+            ctx.font = `bold ${subFontSize}px "Segoe UI", "Poppins"`;
+            ctx.fillStyle = isDark ? `rgba(255, 255, 255, 0.7)` : `hsl(${colors.baseHue + 80}, 100%, 70%)`;
+            ctx.fillText(customSubText, textX + Math.sin(t*15)*3, textY + fontSize * 0.7);
+            
+            // PARTIKEL
+            const particleCount = Math.min(35, 15 + energy * 25);
+            for (let p = 0; p < particleCount; p++) {
+                const angle = t * 3 + p;
+                const rad = triangleSize + 45 + bass * 45;
+                const xOff = Math.sin(angle) * rad;
+                const yOff = Math.cos(angle * 1.3) * rad * 0.7;
+                ctx.fillStyle = isDark ? `rgba(255, 255, 255, ${0.3 + energy * 0.3})` : `hsla(${colors.baseHue + p * 20}, 100%, 65%, 0.6)`;
+                ctx.fillText("✦", w/2 + xOff, h/2 + yOff);
+            }
+            ctx.restore();
+            
+            // OVERLAY DENYUT
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = isDark ? `rgba(255, 255, 255, ${0.05 + bass * 0.1})` : `rgba(255, 60, 120, ${0.12 + bass * 0.28})`;
+            ctx.fillRect(0, 0, w, h);
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        let currentAudioElement = null;
+        
+        function startRenderLoop(durationMs, audioEl) {
+            renderStartTime = performance.now();
+            frameCount = 0;
+            
+            function renderFrame(now) {
+                if (!isRendering) return;
+                const elapsed = now - renderStartTime;
+                const progress = Math.min(1, elapsed / durationMs);
+                updateAudioEnergy(audioEl);
+                drawFullEffect(currentEnergy, currentBass, spectrumData, progress);
+                time += 0.02;
+                frameCount++;
+                
+                const percent = progress * 100;
+                progressFill.style.width = `${percent}%`;
+                const currentSec = Math.floor(progress * audioDuration);
+                const currentFps = Math.round(frameCount / (elapsed / 1000));
+                progressText.innerHTML = `<i class="fa fa-cog fa-spin"></i> ${Math.floor(percent)}% (${currentSec}/${Math.floor(audioDuration)}s) | ${currentFps} fps`;
+                
+                if (progress < 1 && isRendering) {
+                    renderAnimationId = requestAnimationFrame(renderFrame);
+                } else if (progress >= 1 && isRendering) {
+                    finishRendering();
+                }
+            }
+            renderAnimationId = requestAnimationFrame(renderFrame);
+        }
+        
+        async function startRender() {
+            if (!audioFileData || !audioDuration) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Upload MP3 dulu! (max 10 menit)`;
+                statusDiv.className = "status error";
+                return;
+            }
+            if (isRendering) return;
+            
+            isRendering = true;
+            saveBtn.disabled = true;
+            saveBtn.classList.add('rendering');
+            progressContainer.style.display = "block";
+            progressFill.style.width = "0%";
+            
+            const effectNames = { default: "Default", glitch: "Glitch", neon: "Neon", hologram: "Hologram", fire: "Fire", ice: "Ice", retro: "Retro" };
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Rendering ${effectNames[currentEffect]}...`;
+            statusDiv.className = "status rendering";
+            time = 0;
+            frameCount = 0;
+            
+            try {
+                const newAudioElement = await createNewAudioForRender();
+                currentAudioElement = newAudioElement;
+                newAudioElement.volume = 1;
+                newAudioElement.currentTime = 0;
+                
+                canvasStream = canvas.captureStream(selectedFps);
+                
+                let audioStream = null;
+                if (audioContext && sourceNode) {
+                    const dest = audioContext.createMediaStreamDestination();
+                    sourceNode.connect(dest);
+                    audioStream = dest.stream;
+                }
+                
+                let tracks = [...canvasStream.getVideoTracks()];
+                if (audioStream) tracks = tracks.concat(audioStream.getAudioTracks());
+                const combinedStream = new MediaStream(tracks);
+                
+                mediaRecorder = new MediaRecorder(combinedStream, { 
+                    mimeType: 'video/webm',
+                    videoBitsPerSecond: 8000000,
+                    audioBitsPerSecond: 128000
+                });
+                recordedChunks = [];
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) recordedChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const songName = audioFileInput.files[0]?.name.replace('.mp3', '') || 'douyinlike';
+                    const themeName = currentTheme === 'dark' ? 'dark' : 'colorful';
+                    a.download = `${songName}_${currentEffect}_${themeName}.webm`;
+                    a.href = url;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    const fileSizeMB = (blob.size / 1024 / 1024).toFixed(2);
+                    statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> Selesai! ${fileSizeMB} MB - Efek: ${effectNames[currentEffect]} - Segitiga Spectrum`;
+                    statusDiv.className = "status success";
+                    progressContainer.style.display = "none";
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('rendering');
+                    isRendering = false;
+                    if (canvasStream) canvasStream.getTracks().forEach(track => track.stop());
+                    if (newAudioElement.src) URL.revokeObjectURL(newAudioElement.src);
+                };
+                
+                mediaRecorder.start(100);
+                await newAudioElement.play();
+                
+                const durationMs = audioDuration * 1000;
+                startRenderLoop(durationMs, newAudioElement);
+                
+                recordingTimeout = setTimeout(() => {
+                    if (isRendering && mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                    }
+                }, durationMs + 500);
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Error: ${err.message}`;
+                statusDiv.className = "status error";
+                cancelRender();
+            }
+        }
+        
+        function finishRendering() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+            }
+        }
+        
+        function cancelRender() {
+            if (isRendering) {
+                if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+                isRendering = false;
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('rendering');
+                progressContainer.style.display = "none";
+                if (currentAudioElement) {
+                    currentAudioElement.pause();
+                    if (currentAudioElement.src) URL.revokeObjectURL(currentAudioElement.src);
+                }
+                if (audioContext) audioContext.close();
+            }
+        }
+        
+        saveBtn.onclick = startRender;
+        
+        canvas.addEventListener('click', () => {
+            if (!isRendering && navigator.vibrate) navigator.vibrate(80);
+        });
+        
+        function idleAnimate() {
+            if (!isRendering) {
+                currentEnergy = 0.4 + Math.sin(time * 2) * 0.2;
+                currentBass = 0.3 + Math.sin(time * 3) * 0.15;
+                for (let i = 0; i < spectrumData.length; i++) {
+                    spectrumData[i] = 0.3 + Math.sin(time * 4 + i * 0.15) * 0.2;
+                }
+                drawFullEffect(currentEnergy, currentBass, spectrumData, 0);
+                time += 0.03;
+            }
+            requestAnimationFrame(idleAnimate);
+        }
+        
+        idleAnimate();
+    })();
+</script>
+</body>
+</html>
