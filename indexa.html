@@ -3,102 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Douyin Like Effect - Lightweight</title>
+    <title>Douyin Like Effect - Light Mode</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: linear-gradient(135deg, #0a0f1e 0%, #03050b 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            padding: 15px;
+            padding: 16px;
         }
-        .container { max-width: 600px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 15px; }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
         .title {
-            font-size: 1.6rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 700;
             background: linear-gradient(135deg, #00f2fe, #ff0040, #ffb347);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: gradien 2s ease infinite;
         }
+
+        @keyframes gradien {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Card */
         .card {
             background: rgba(10, 20, 30, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .canvas-wrapper { text-align: center; }
+
+        /* Canvas */
+        .canvas-wrapper {
+            text-align: center;
+        }
+
         canvas {
             width: 100%;
             max-width: 320px;
-            border-radius: 16px;
-            box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             background: #000;
             margin: 0 auto;
             display: block;
         }
-        .upload-area { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+
+        /* Upload Area */
+        .upload-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
         .file-label {
             background: #2a2f3f;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 40px;
             cursor: pointer;
             color: white;
             font-size: 0.8rem;
             font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        #audioName { color: #ffb347; font-size: 0.7rem; background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 40px; }
-        
-        .theme-selector, .effect-selector { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
-        .theme-btn, .effect-btn {
-            background: rgba(30,35,50,0.8);
-            border: 1px solid rgba(255,255,255,0.2);
+
+        .file-label:hover {
+            background: #3a3f4f;
+        }
+
+        #audioName {
+            color: #ffb347;
+            font-size: 0.7rem;
+            background: rgba(0, 0, 0, 0.5);
             padding: 5px 12px;
+            border-radius: 40px;
+        }
+
+        /* Theme & Effect Selector */
+        .selector-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn, .effect-btn {
+            background: rgba(30, 35, 50, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
             border-radius: 40px;
             cursor: pointer;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 500;
+            transition: all 0.2s;
         }
+
+        .theme-btn:hover, .effect-btn:hover {
+            background: rgba(50, 55, 70, 0.9);
+        }
+
         .theme-btn.active, .effect-btn.active {
             background: linear-gradient(95deg, #ff0040, #ff7a00);
             border-color: #ff7a00;
         }
-        
-        /* Mode Hemat Toggle */
-        .eco-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 10px 0;
-            background: rgba(0,0,0,0.4);
-            padding: 6px;
-            border-radius: 40px;
-        }
-        .eco-toggle label {
-            color: white;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-        .eco-toggle input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
+
+        /* Text Input */
         .text-input-area {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px;
+            margin: 12px 0;
         }
+
         .text-input-group {
             display: flex;
             align-items: center;
@@ -106,129 +153,279 @@
             margin-bottom: 8px;
             flex-wrap: wrap;
         }
+
         .text-input-group label {
             color: #ffd966;
             font-size: 0.7rem;
-            min-width: 65px;
+            font-weight: 600;
+            min-width: 70px;
         }
+
         .text-input-group input {
             flex: 1;
             padding: 6px 12px;
             border-radius: 40px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             font-size: 0.75rem;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .res-selector { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+
+        .text-input-group input:focus {
+            outline: none;
+            border-color: #ff0040;
+        }
+
+        /* Resolution Selector */
+        .res-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
         .res-btn {
-            background: rgba(30,35,50,0.8);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 4px 10px;
+            background: rgba(30, 35, 50, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
             border-radius: 40px;
             cursor: pointer;
             text-align: center;
         }
-        .res-btn.active { background: #ff0040; }
-        .res-name { font-size: 0.7rem; color: white; font-weight: bold; }
-        
-        .controls { display: flex; justify-content: center; margin: 15px 0; }
+
+        .res-btn.active {
+            background: #ff0040;
+        }
+
+        .res-name {
+            font-size: 0.7rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Slider */
+        .slider-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .slider-group span {
+            color: #ffd966;
+            font-size: 0.75rem;
+        }
+
+        input[type="range"] {
+            width: 160px;
+            height: 3px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #ff0040, #00f2fe);
+            border-radius: 10px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            border: 1px solid #ff3b6f;
+            cursor: pointer;
+        }
+
+        /* FPS */
+        .fps-group {
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 15px;
+            border-radius: 40px;
+        }
+
+        .fps-group label {
+            color: white;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .fps-group input {
+            margin-right: 3px;
+        }
+
+        /* Button */
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0 12px;
+        }
+
         button {
-            padding: 10px 20px;
+            padding: 10px 24px;
             font-size: 0.9rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             background: linear-gradient(95deg, #ff0040, #ff7a00);
             color: white;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        button.rendering {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Progress */
+        .progress-container {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .progress-bar-bg {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0040, #ffb347);
+            width: 0%;
+            border-radius: 5px;
+        }
+
+        .progress-text {
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 5px;
+            color: #ffaa66;
+        }
+
+        .duration-info {
+            font-size: 0.65rem;
+            text-align: center;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        /* Status */
         .status {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
             padding: 8px;
             border-radius: 40px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: #ddd;
             font-size: 0.7rem;
         }
-        .slider-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin: 8px 0;
+
+        .status.loading {
+            background: rgba(0, 100, 200, 0.3);
+            color: #88ccff;
         }
-        .slider-group span { color: #ffd966; font-size: 0.7rem; }
-        input[type="range"] { width: 150px; height: 3px; }
-        .fps-group {
-            display: flex;
-            gap: 12px;
-            background: rgba(0,0,0,0.3);
-            padding: 4px 12px;
-            border-radius: 40px;
+
+        .status.rendering {
+            background: rgba(255, 100, 0, 0.3);
+            color: #ffaa66;
         }
-        .fps-group label { color: white; font-size: 0.7rem; }
-        .progress-container { display: none; margin-top: 10px; }
-        .progress-bar-bg { height: 4px; background: rgba(255,255,255,0.2); border-radius: 5px; }
-        .progress-bar-fill { height: 100%; background: #ff0040; width: 0%; }
-        .progress-text { font-size: 0.65rem; text-align: center; margin-top: 4px; color: #ffaa66; }
-        .duration-info { font-size: 0.65rem; text-align: center; color: #aaa; }
+
+        .status.success {
+            background: rgba(0, 200, 100, 0.3);
+            color: #88ffaa;
+        }
+
+        .status.error {
+            background: rgba(200, 0, 0, 0.3);
+            color: #ff8888;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .card { padding: 12px; }
+            .text-input-group { flex-direction: column; align-items: stretch; }
+            .text-input-group label { min-width: auto; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="title"><i class="fa fa-bolt"></i> DOUYIN LIKE <i class="fa fa-bolt"></i></div>
+        <h1 class="title"><i class="fa fa-bolt"></i> DOUYIN LIKE EFFECT <i class="fa fa-bolt"></i></h1>
     </div>
 
     <div class="card">
         <div class="canvas-wrapper">
-            <canvas id="douyinCanvas" width="540" height="960" style="width:100%; max-width:320px; height:auto; border-radius:16px"></canvas>
+            <canvas id="douyinCanvas" width="540" height="960" style="width:100%; max-width:320px; height:auto; border-radius:20px"></canvas>
         </div>
 
         <div class="upload-area">
-            <label class="file-label"><i class="fa fa-music"></i> MP3</label>
+            <label class="file-label"><i class="fa fa-music"></i> Upload MP3</label>
             <input type="file" id="audioFile" accept="audio/mpeg,audio/mp3" style="display:none">
-            <span id="audioName"><i class="fa fa-headphones"></i> Upload</span>
+            <span id="audioName"><i class="fa fa-headphones"></i> Belum ada</span>
         </div>
 
-        <div class="eco-toggle">
-            <input type="checkbox" id="ecoModeCheckbox">
-            <label for="ecoModeCheckbox"><i class="fa fa-leaf"></i> Mode Hemat (Performa)</label>
+        <div class="selector-group">
+            <div class="theme-btn active" data-theme="colorful">🌈 Colorful</div>
+            <div class="theme-btn" data-theme="dark">🌙 Dark Glow</div>
         </div>
 
-        <div class="theme-selector">
-            <div class="theme-btn active" data-theme="colorful">Color</div>
-            <div class="theme-btn" data-theme="dark">Dark</div>
-        </div>
-
-        <div class="effect-selector">
-            <div class="effect-btn active" data-effect="default">Default</div>
-            <div class="effect-btn" data-effect="neon">Neon</div>
-            <div class="effect-btn" data-effect="fire">Fire</div>
-            <div class="effect-btn" data-effect="ice">Ice</div>
+        <div class="selector-group">
+            <div class="effect-btn active" data-effect="default">✨ Default</div>
+            <div class="effect-btn" data-effect="neon">⚡ Neon</div>
+            <div class="effect-btn" data-effect="fire">🔥 Fire</div>
+            <div class="effect-btn" data-effect="ice">❄️ Ice</div>
         </div>
 
         <div class="text-input-area">
-            <div class="text-input-group"><label>Teks Atas</label><input type="text" id="mainTextInput" value="⚡ VIRAL ⚡" maxlength="30"></div>
-            <div class="text-input-group"><label>Teks Tengah</label><input type="text" id="centerTextInput" value="DOUYIN" maxlength="15"></div>
-            <div class="text-input-group"><label>Teks Bawah</label><input type="text" id="subTextInput" value="#FYP" maxlength="30"></div>
+            <div class="text-input-group">
+                <label><i class="fa fa-text-height"></i> Teks Atas</label>
+                <input type="text" id="mainTextInput" value="⚡ VIRAL ⚡" maxlength="30">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-circle-o"></i> Teks Tengah</label>
+                <input type="text" id="centerTextInput" value="DOUYIN LIKE" maxlength="20">
+            </div>
+            <div class="text-input-group">
+                <label><i class="fa fa-hashtag"></i> Teks Bawah</label>
+                <input type="text" id="subTextInput" value="#DouyinLike" maxlength="35">
+            </div>
         </div>
 
         <div class="res-selector">
-            <div class="res-btn" data-res="youtube"><div class="res-name">YT</div></div>
-            <div class="res-btn active" data-res="tiktok"><div class="res-name">TT</div></div>
-            <div class="res-btn" data-res="instagram"><div class="res-name">IG</div></div>
+            <div class="res-btn" data-res="youtube"><div class="res-name">📺 YouTube</div></div>
+            <div class="res-btn active" data-res="tiktok"><div class="res-name">🎵 TikTok</div></div>
+            <div class="res-btn" data-res="instagram"><div class="res-name">📱 Instagram</div></div>
         </div>
 
         <div class="slider-group">
-            <div class="fps-group"><span>FPS</span><label><input type="radio" name="fps" value="24">24</label><label><input type="radio" name="fps" value="30" checked>30</label></div>
-            <span><i class="fa fa-flash"></i> <span id="intensityVal">15</span></span>
-            <input type="range" id="intensitySlider" min="0" max="30" value="15">
+            <div class="fps-group">
+                <span><i class="fa fa-video-camera"></i></span>
+                <label><input type="radio" name="fps" value="24" checked> 24</label>
+                <label><input type="radio" name="fps" value="30"> 30</label>
+            </div>
+            <span><i class="fa fa-flash"></i> <span id="intensityVal">12</span></span>
+            <input type="range" id="intensitySlider" min="0" max="20" value="12">
         </div>
 
         <div class="controls">
-            <button id="saveBtn" disabled><i class="fa fa-floppy-o"></i> RENDER</button>
+            <button id="saveBtn" disabled><i class="fa fa-download"></i> RENDER VIDEO</button>
         </div>
 
         <div class="progress-container" id="progressContainer">
@@ -236,48 +433,95 @@
             <div class="progress-text" id="progressText"></div>
             <div class="duration-info" id="durationInfo"></div>
         </div>
+
         <div id="status" class="status"><i class="fa fa-info-circle"></i> Upload MP3 (max 10 menit)</div>
     </div>
 </div>
 
 <script>
-    (function(){
+    (function() {
+        // BATASAN DURASI
         const MAX_DURATION_SECONDS = 600;
-        let isEco = false;
-        const ecoCheck = document.getElementById('ecoModeCheckbox');
-        ecoCheck.addEventListener('change', (e) => { isEco = e.target.checked; });
-
+        
+        // RESOLUSI
         const resolutions = {
-            youtube: { width: 1920, height: 1080, name: "YT" },
-            instagram: { width: 1080, height: 1080, name: "IG" },
-            tiktok: { width: 1080, height: 1920, name: "TT" }
+            youtube: { width: 1920, height: 1080, name: "YouTube" },
+            instagram: { width: 1080, height: 1080, name: "Instagram" },
+            tiktok: { width: 1080, height: 1920, name: "TikTok" }
         };
+        
         let currentRes = "tiktok";
-        let canvasWidth = 1080, canvasHeight = 1920;
+        let canvasWidth = 1080;
+        let canvasHeight = 1920;
+        
         const canvas = document.getElementById('douyinCanvas');
         const ctx = canvas.getContext('2d');
         
+        // THEME & EFFECT
         let currentTheme = "colorful";
         let currentEffect = "default";
+        
+        // TEXT
         let customMainText = "⚡ VIRAL ⚡";
-        let customCenterText = "DOUYIN";
-        let customSubText = "#FYP";
+        let customCenterText = "DOUYIN LIKE";
+        let customSubText = "#DouyinLike";
         
         document.getElementById('mainTextInput').addEventListener('input', (e) => customMainText = e.target.value || "⚡ VIRAL ⚡");
-        document.getElementById('centerTextInput').addEventListener('input', (e) => customCenterText = e.target.value || "DOUYIN");
-        document.getElementById('subTextInput').addEventListener('input', (e) => customSubText = e.target.value || "#FYP");
+        document.getElementById('centerTextInput').addEventListener('input', (e) => customCenterText = e.target.value || "DOUYIN LIKE");
+        document.getElementById('subTextInput').addEventListener('input', (e) => customSubText = e.target.value || "#DouyinLike");
         
-        function setTheme(t) { currentTheme = t; document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.theme === t)); }
-        function setEffect(e) { currentEffect = e; document.querySelectorAll('.effect-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.effect === e)); }
-        document.querySelectorAll('.theme-btn').forEach(btn => btn.addEventListener('click', () => setTheme(btn.dataset.theme)));
-        document.querySelectorAll('.effect-btn').forEach(btn => btn.addEventListener('click', () => setEffect(btn.dataset.effect)));
+        // SET THEME
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.theme === theme) btn.classList.add('active');
+            });
+        }
         
-        let audioFileData = null, audioDuration = 0, isRendering = false;
-        let audioContext = null, analyserNode = null, sourceNode = null;
-        let mediaRecorder = null, recordedChunks = [], canvasStream = null, recordingTimeout = null, renderAnimationId = null;
-        let effectIntensity = 15, selectedFps = 30;
-        document.querySelectorAll('input[name="fps"]').forEach(r => r.addEventListener('change', (e) => { if(e.target.checked) selectedFps = parseInt(e.target.value); }));
-        document.getElementById('intensitySlider').addEventListener('input', (e) => { effectIntensity = parseInt(e.target.value); document.getElementById('intensityVal').innerText = effectIntensity; });
+        function setEffect(effect) {
+            currentEffect = effect;
+            document.querySelectorAll('.effect-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.effect === effect) btn.classList.add('active');
+            });
+        }
+        
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+        });
+        
+        document.querySelectorAll('.effect-btn').forEach(btn => {
+            btn.addEventListener('click', () => setEffect(btn.dataset.effect));
+        });
+        
+        // AUDIO & RECORDING
+        let audioFileData = null;
+        let audioDuration = 0;
+        let isRendering = false;
+        let audioContext = null;
+        let analyserNode = null;
+        let sourceNode = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let canvasStream = null;
+        let recordingTimeout = null;
+        let renderAnimationId = null;
+        
+        // UI ELEMENTS
+        let effectIntensity = 12;
+        let selectedFps = 24;
+        
+        document.querySelectorAll('input[name="fps"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.checked) selectedFps = parseInt(e.target.value);
+            });
+        });
+        
+        document.getElementById('intensitySlider').addEventListener('input', (e) => {
+            effectIntensity = parseInt(e.target.value);
+            document.getElementById('intensityVal').innerText = effectIntensity;
+        });
         
         const audioFileInput = document.getElementById('audioFile');
         const saveBtn = document.getElementById('saveBtn');
@@ -287,10 +531,15 @@
         const progressText = document.getElementById('progressText');
         const durationInfo = document.getElementById('durationInfo');
         
-        let time = 0, renderStartTime = 0, frameCount = 0;
-        let currentEnergy = 0.3, currentBass = 0;
+        // VISUAL VARIABLES
+        let time = 0;
+        let renderStartTime = 0;
+        let frameCount = 0;
+        let currentEnergy = 0.3;
+        let currentBass = 0;
         let spectrumData = new Array(24).fill(0);
         
+        // SET RESOLUSI
         function setResolution(resKey) {
             currentRes = resKey;
             const res = resolutions[resKey];
@@ -298,43 +547,64 @@
             canvasHeight = res.height;
             canvas.width = canvasWidth;
             canvas.height = canvasHeight;
-            document.querySelectorAll('.res-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.res === resKey));
+            
+            document.querySelectorAll('.res-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.res === resKey) btn.classList.add('active');
+            });
         }
-        document.querySelectorAll('.res-btn').forEach(btn => btn.addEventListener('click', () => setResolution(btn.dataset.res)));
+        
+        document.querySelectorAll('.res-btn').forEach(btn => {
+            btn.addEventListener('click', () => setResolution(btn.dataset.res));
+        });
         setResolution('tiktok');
         
+        // UPLOAD MP3
         audioFileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if(!file) return;
-            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading...`;
+            if (!file) return;
+            
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Loading MP3...`;
             statusDiv.className = "status loading";
+            
             try {
                 const arrayBuffer = await file.arrayBuffer();
                 audioFileData = arrayBuffer;
-                const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const buf = await tempCtx.decodeAudioData(arrayBuffer.slice(0));
-                audioDuration = buf.duration;
-                await tempCtx.close();
-                const mins = Math.floor(audioDuration/60), secs = Math.floor(audioDuration%60);
-                durationInfo.innerHTML = `Durasi: ${mins}:${secs.toString().padStart(2,'0')}`;
-                if(audioDuration > MAX_DURATION_SECONDS) throw new Error("Max 10 menit");
-                statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> Siap! Klik RENDER`;
+                
+                const tempContext = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await tempContext.decodeAudioData(arrayBuffer.slice(0));
+                audioDuration = audioBuffer.duration;
+                await tempContext.close();
+                
+                const minutes = Math.floor(audioDuration / 60);
+                const seconds = Math.floor(audioDuration % 60);
+                durationInfo.innerHTML = `🎵 Durasi: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (audioDuration > MAX_DURATION_SECONDS) {
+                    statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Maksimal 10 menit!`;
+                    statusDiv.className = "status error";
+                    saveBtn.disabled = true;
+                    return;
+                }
+                
+                statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> MP3 siap! Klik RENDER`;
                 statusDiv.className = "status";
                 saveBtn.disabled = false;
-            } catch(err) {
-                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Error: ${err.message}`;
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Gagal: ${err.message}`;
                 statusDiv.className = "status error";
                 saveBtn.disabled = true;
             }
         });
         
+        // CREATE AUDIO FOR RENDER
         async function createNewAudioForRender() {
-            if(!audioFileData) throw new Error("No audio");
-            if(audioContext) await audioContext.close();
+            if (!audioFileData) throw new Error("No audio data");
+            if (audioContext) await audioContext.close();
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             analyserNode = audioContext.createAnalyser();
             analyserNode.fftSize = 256;
-            const blob = new Blob([audioFileData], {type: 'audio/mpeg'});
+            const blob = new Blob([audioFileData], { type: 'audio/mpeg' });
             const url = URL.createObjectURL(blob);
             const newAudio = new Audio(url);
             newAudio.crossOrigin = "anonymous";
@@ -343,302 +613,370 @@
             sourceNode = audioContext.createMediaElementSource(newAudio);
             sourceNode.connect(analyserNode);
             analyserNode.connect(audioContext.destination);
-            if(audioContext.state === 'suspended') await audioContext.resume();
+            if (audioContext.state === 'suspended') await audioContext.resume();
             return newAudio;
         }
         
+        // UPDATE ENERGY
         function updateEnergy() {
-            if(!analyserNode || !currentAudioElement || currentAudioElement.paused) {
-                currentEnergy = 0.4 + Math.sin(time*2)*0.15;
-                currentBass = 0.3 + Math.sin(time*3)*0.12;
-                for(let i=0;i<spectrumData.length;i++) spectrumData[i] = 0.3 + Math.sin(time*3 + i*0.2)*0.2;
+            if (!analyserNode || !currentAudioElement || currentAudioElement.paused) {
+                currentEnergy = 0.4 + Math.sin(time * 2) * 0.15;
+                currentBass = 0.3 + Math.sin(time * 3) * 0.12;
+                for (let i = 0; i < spectrumData.length; i++) {
+                    spectrumData[i] = 0.3 + Math.sin(time * 3 + i * 0.25) * 0.2;
+                }
                 return;
             }
             const data = new Uint8Array(analyserNode.frequencyBinCount);
             analyserNode.getByteFrequencyData(data);
-            let bass=0;
-            for(let i=0;i<Math.min(10,data.length);i++) bass+=data[i];
-            currentBass = Math.min(0.9, (bass/(10*255))*1.2);
-            let total=0;
-            for(let i=0;i<data.length;i++) total+=data[i];
-            currentEnergy = Math.min(0.9, (total/(data.length*255))*1.3);
+            let bass = 0;
+            for (let i = 0; i < Math.min(10, data.length); i++) bass += data[i];
+            currentBass = Math.min(0.9, (bass / (10 * 255)) * 1.2);
+            let total = 0;
+            for (let i = 0; i < data.length; i++) total += data[i];
+            currentEnergy = Math.min(0.9, (total / (data.length * 255)) * 1.3);
             const step = Math.floor(data.length / spectrumData.length);
-            for(let i=0;i<spectrumData.length;i++) {
-                let sum=0, cnt=0;
-                for(let j=0;j<step && i*step+j<data.length;j++) { sum+=data[i*step+j]; cnt++; }
-                spectrumData[i] = Math.min(0.9, (sum/(cnt*255))*1.2);
+            for (let i = 0; i < spectrumData.length; i++) {
+                let sum = 0, cnt = 0;
+                for (let j = 0; j < step && i * step + j < data.length; j++) {
+                    sum += data[i * step + j];
+                    cnt++;
+                }
+                spectrumData[i] = Math.min(0.9, (sum / (cnt * 255)) * 1.2);
             }
         }
         
+        // GET EFFECT HUE
         function getEffectHue(energy, progress) {
-            switch(currentEffect) {
-                case 'neon': return (time*80 + energy*200)%360;
-                case 'fire': return 20 + energy*40;
-                case 'ice': return 180 + energy*60;
-                default: return (time*40 + energy*200 + progress*100)%360;
+            const t = time;
+            switch (currentEffect) {
+                case 'neon': return (t * 80 + energy * 200) % 360;
+                case 'fire': return (20 + energy * 40);
+                case 'ice': return (180 + energy * 60);
+                default: return (t * 40 + energy * 200 + progress * 100) % 360;
             }
         }
         
-        function drawTriangleSpectrum(centerX, centerY, size) {
-            const intensity = effectIntensity/15;
+        // DRAW CIRCLE SPECTRUM (RINGAN)
+        function drawCircleSpectrum(centerX, centerY, radius, energy, bass, spectrum) {
+            const intensity = effectIntensity / 12;
             const isDark = currentTheme === "dark";
-            const hue = getEffectHue(currentEnergy, 0);
-            const angles = [-Math.PI/2, Math.PI/6, Math.PI*5/6];
-            const points = angles.map(a => ({x: centerX + size*Math.cos(a), y: centerY + size*Math.sin(a)}));
+            const hue = getEffectHue(energy, 0);
             
-            // Segitiga luar (tanpa shadow blur jika eco)
-            if(!isEco) {
-                ctx.shadowBlur = isDark ? 12 : 8;
-                ctx.shadowColor = isDark ? `rgba(255,255,255,0.3)` : `rgba(255,70,140,0.4)`;
-            }
+            // Lingkaran luar
             ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            ctx.lineTo(points[1].x, points[1].y);
-            ctx.lineTo(points[2].x, points[2].y);
-            ctx.closePath();
-            if(isDark) ctx.fillStyle = `rgba(50,50,50,0.5)`;
-            else ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.3)`;
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            
+            if (isDark) {
+                const grad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, radius);
+                grad.addColorStop(0, `rgba(80, 80, 80, 0.4)`);
+                grad.addColorStop(1, `rgba(30, 30, 30, 0.2)`);
+                ctx.fillStyle = grad;
+            } else {
+                const grad = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, radius);
+                grad.addColorStop(0, `hsla(${hue}, 75%, 55%, 0.4)`);
+                grad.addColorStop(1, `hsla(${hue + 60}, 75%, 45%, 0.2)`);
+                ctx.fillStyle = grad;
+            }
             ctx.fill();
-            ctx.strokeStyle = isDark ? `rgba(255,255,255,0.4)` : `rgba(255,255,255,0.5)`;
-            ctx.lineWidth = 2 + currentBass*2;
+            
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, 0.4)` : `rgba(255, 255, 255, 0.5)`;
+            ctx.lineWidth = 2 + bass * 3;
             ctx.stroke();
             
-            // Batang spektrum (lebih sedikit jika eco)
-            let barCount = isEco ? 18 : 30;
-            const barsPerSide = Math.floor(barCount/3);
-            const sideEnergy = [0,0,0];
-            for(let s=0;s<3;s++) {
-                let sum=0;
-                for(let i=0;i<barsPerSide && s*barsPerSide+i<spectrumData.length;i++) sum+=spectrumData[s*barsPerSide+i];
-                sideEnergy[s] = sum/barsPerSide;
-            }
+            // SPEKTRUM BEAT (batang di sekitar lingkaran)
+            const barCount = Math.min(spectrum.length, 24);
+            const angleStep = (Math.PI * 2) / barCount;
             
-            function drawBarsOnEdge(p1,p2,startIdx) {
-                const dx = p2.x-p1.x, dy = p2.y-p1.y;
-                const segLen = Math.hypot(dx,dy);
-                const barW = Math.max(3, segLen/barsPerSide * 0.6);
-                for(let i=0;i<barsPerSide && startIdx+i<spectrumData.length;i++) {
-                    const t = (i+0.5)/barsPerSide;
-                    const barH = 4 + (spectrumData[startIdx+i] * (isEco ? 25 : 40) * intensity);
-                    const bx = p1.x + dx*t, by = p1.y + dy*t;
-                    const perpX = dy/segLen, perpY = -dx/segLen;
-                    const ex = bx + perpX*barH, ey = by + perpY*barH;
-                    ctx.beginPath();
-                    ctx.moveTo(bx,by);
-                    ctx.lineTo(ex,ey);
-                    ctx.lineWidth = barW;
-                    if(isDark) ctx.strokeStyle = `rgb(${100+155*spectrumData[startIdx+i]}, ${100+155*spectrumData[startIdx+i]}, ${100+155*spectrumData[startIdx+i]})`;
-                    else ctx.strokeStyle = `hsl(${hue + (startIdx+i)*10}, 75%, 60%)`;
-                    ctx.stroke();
+            for (let i = 0; i < barCount; i++) {
+                const barHeight = 6 + (spectrum[i] * 35 * intensity);
+                const angle = i * angleStep - Math.PI / 2;
+                const x1 = centerX + (radius - 5) * Math.cos(angle);
+                const y1 = centerY + (radius - 5) * Math.sin(angle);
+                const x2 = centerX + (radius + barHeight) * Math.cos(angle);
+                const y2 = centerY + (radius + barHeight) * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineWidth = 4;
+                
+                if (isDark) {
+                    const bright = 100 + 155 * spectrum[i];
+                    ctx.strokeStyle = `rgb(${bright}, ${bright}, ${bright})`;
+                } else {
+                    ctx.strokeStyle = `hsl(${hue + i * 15}, 80%, 65%)`;
                 }
+                ctx.stroke();
             }
-            drawBarsOnEdge(points[0],points[1],0);
-            drawBarsOnEdge(points[1],points[2],barsPerSide);
-            drawBarsOnEdge(points[2],points[0],barsPerSide*2);
             
-            // Segitiga dalam
-            const inner = size * 0.55;
-            const inPts = angles.map(a => ({x: centerX + inner*Math.cos(a), y: centerY + inner*Math.sin(a)}));
+            // Lingkaran dalam
+            const innerRadius = radius * 0.55;
             ctx.beginPath();
-            ctx.moveTo(inPts[0].x, inPts[0].y);
-            ctx.lineTo(inPts[1].x, inPts[1].y);
-            ctx.lineTo(inPts[2].x, inPts[2].y);
-            ctx.closePath();
-            ctx.fillStyle = isDark ? `rgba(0,0,0,0.7)` : `rgba(0,0,0,0.5)`;
+            ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+            ctx.fillStyle = isDark ? `rgba(0, 0, 0, 0.7)` : `rgba(0, 0, 0, 0.55)`;
             ctx.fill();
-            ctx.font = `bold ${Math.min(32, 22 + currentBass*8)}px "Segoe UI"`;
-            ctx.fillStyle = "white";
-            ctx.shadowBlur = 0;
+            ctx.strokeStyle = isDark ? `rgba(255, 255, 255, 0.4)` : `rgba(255, 255, 255, 0.4)`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            
+            // TEKS TENGAH
+            ctx.font = `bold ${Math.min(32, 24 + bass * 10)}px "Segoe UI", "Poppins"`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = `white`;
             ctx.fillText(customCenterText, centerX, centerY);
         }
         
+        // DRAW FULL EFFECT
         function drawFullEffect(progress) {
-            const w=canvasWidth, h=canvasHeight;
-            const t=time;
-            const intensity = effectIntensity/12;
+            const w = canvasWidth, h = canvasHeight;
+            const t = time;
+            const intensity = effectIntensity / 12;
             const react = currentEnergy * intensity * 1.2;
             const isDark = currentTheme === "dark";
             const hue = getEffectHue(currentEnergy, progress);
             
-            const shakeX = isEco ? 0 : (Math.sin(t*35)*react*1.5 + Math.sin(t*18)*react);
-            const shakeY = isEco ? 0 : (Math.cos(t*32)*react*1.2);
+            // Goyangan ringan (tanpa shadow)
+            const shakeX = Math.sin(t * 35) * (react * 1.2);
+            const shakeY = Math.cos(t * 32) * (react * 1);
             
             ctx.save();
-            ctx.clearRect(0,0,w,h);
+            ctx.clearRect(0, 0, w, h);
             ctx.translate(shakeX, shakeY);
             
-            // Background sederhana
-            if(isDark) {
-                ctx.fillStyle = "#050505";
-                ctx.fillRect(0,0,w,h);
-            } else {
-                const grad = ctx.createLinearGradient(0,0,w,0);
-                grad.addColorStop(0, `hsl(${hue}, 70%, 45%)`);
-                grad.addColorStop(1, `hsl(${hue+80}, 70%, 35%)`);
+            // BACKGROUND
+            if (isDark) {
+                const grad = ctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, `#0a0a0a`);
+                grad.addColorStop(1, `#050505`);
                 ctx.fillStyle = grad;
-                ctx.fillRect(0,0,w,h);
+                ctx.fillRect(0, 0, w, h);
+            } else {
+                const grad = ctx.createLinearGradient(0, 0, w, 0);
+                if (currentEffect === "fire") {
+                    grad.addColorStop(0, `#ff4d00`);
+                    grad.addColorStop(1, `#8b0000`);
+                } else if (currentEffect === "ice") {
+                    grad.addColorStop(0, `#00bfff`);
+                    grad.addColorStop(1, `#000080`);
+                } else {
+                    grad.addColorStop(0, `hsl(${hue}, 75%, 50%)`);
+                    grad.addColorStop(1, `hsl(${hue + 80}, 75%, 35%)`);
+                }
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
             }
             
-            // Equalizer simple (kurangi jika eco)
-            const eqCount = isEco ? 15 : 25;
-            for(let i=0;i<eqCount;i++) {
-                const barH = 3 + Math.sin(t*10+i)*4 + currentEnergy*15;
-                const x = i*(w/eqCount) + t*15 % (w/eqCount);
-                ctx.fillStyle = isDark ? `rgba(255,255,255,0.15)` : `hsla(${hue+i*15}, 75%, 55%, 0.5)`;
-                ctx.fillRect(x, h/2 - barH/2, Math.max(4, w/eqCount-2), barH);
+            // EQUALIZER SEDERHANA
+            const eqCount = 20;
+            for (let i = 0; i < eqCount; i++) {
+                const barH = 3 + Math.sin(t * 12 + i) * 4 + currentEnergy * 18;
+                const x = i * (w / eqCount) + t * 15 % (w / eqCount);
+                ctx.fillStyle = isDark ? `rgba(255, 255, 255, 0.12)` : `hsla(${hue + i * 15}, 75%, 60%, 0.4)`;
+                ctx.fillRect(x, h / 2 - barH / 2, Math.max(4, w / eqCount - 2), barH);
             }
             
-            const centerX = w/2, centerY = h/2;
-            const triSize = Math.min(w,h) * 0.28;
-            drawTriangleSpectrum(centerX, centerY, triSize);
+            // LINGKARAN SPEKTRUM DI TENGAH
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const circleRadius = Math.min(w, h) * 0.28;
+            drawCircleSpectrum(centerX, centerY, circleRadius, currentEnergy, currentBass, spectrumData);
             
-            // Teks atas (tanpa shadow berlebihan)
-            const fontSize = Math.min(40, 30 + currentEnergy*12);
-            ctx.font = `bold ${fontSize}px "Segoe UI"`;
+            // TEKS ATAS
+            const fontSize = Math.min(42, 32 + currentEnergy * 14);
+            ctx.font = `bold ${fontSize}px "Segoe UI", "Poppins"`;
             ctx.textAlign = "center";
-            const textX = w/2 + Math.sin(t*20)*react*0.5;
-            const textY = h*0.12 + Math.cos(t*18)*react*0.4;
-            const offset = intensity*0.2 + currentEnergy*6;
-            if(isDark) {
-                ctx.fillStyle = "white";
+            const textX = w / 2 + Math.sin(t * 22) * (react * 0.6);
+            const textY = h * 0.12 + Math.cos(t * 19) * (react * 0.4);
+            const offset = intensity * 0.2 + currentEnergy * 8;
+            
+            if (isDark) {
+                ctx.fillStyle = `white`;
                 ctx.fillText(customMainText, textX, textY);
             } else {
-                ctx.fillStyle = `rgba(255,40,80,0.9)`;
-                ctx.fillText(customMainText, textX-offset, textY);
-                ctx.fillStyle = `rgba(0,230,250,0.9)`;
-                ctx.fillText(customMainText, textX+offset, textY);
-                ctx.fillStyle = "white";
+                ctx.fillStyle = `rgba(255, 40, 80, 0.9)`;
+                ctx.fillText(customMainText, textX - offset, textY);
+                ctx.fillStyle = `rgba(0, 230, 250, 0.9)`;
+                ctx.fillText(customMainText, textX + offset, textY);
+                ctx.fillStyle = `white`;
                 ctx.fillText(customMainText, textX, textY);
             }
             
-            // Teks bawah
-            ctx.font = `bold ${Math.min(18, 14+currentEnergy*5)}px "Segoe UI"`;
-            ctx.fillStyle = isDark ? "#ccc" : `hsl(${hue+80}, 80%, 65%)`;
-            ctx.fillText(customSubText, textX + Math.sin(t*12)*2, textY + fontSize*0.65);
+            // TEKS BAWAH
+            const subFontSize = Math.min(20, 14 + currentEnergy * 6);
+            ctx.font = `bold ${subFontSize}px "Segoe UI", "Poppins"`;
+            ctx.fillStyle = isDark ? `#cccccc` : `hsl(${hue + 80}, 80%, 65%)`;
+            ctx.fillText(customSubText, textX + Math.sin(t * 12) * 2, textY + fontSize * 0.7);
             
-            // Partikel (kurangi drastis jika eco)
-            const particleCnt = isEco ? 6 : (12 + currentEnergy*15);
-            for(let p=0;p<particleCnt;p++) {
-                const ang = t*3 + p;
-                const rad = triSize + 25 + currentBass*30;
-                const xp = w/2 + Math.sin(ang)*rad;
-                const yp = h/2 + Math.cos(ang*1.2)*rad*0.6;
-                ctx.fillStyle = isDark ? `rgba(255,255,255,0.4)` : `hsla(${hue + p*20}, 80%, 65%, 0.6)`;
-                ctx.fillText("✦", xp, yp);
+            // PARTIKEL SEDIKIT
+            const particleCnt = 8 + Math.floor(currentEnergy * 12);
+            for (let p = 0; p < particleCnt; p++) {
+                const angle = t * 3 + p;
+                const rad = circleRadius + 25 + currentBass * 30;
+                const xOff = Math.sin(angle) * rad;
+                const yOff = Math.cos(angle * 1.3) * rad * 0.7;
+                ctx.fillStyle = isDark ? `rgba(255, 255, 255, 0.4)` : `hsla(${hue + p * 20}, 80%, 65%, 0.5)`;
+                ctx.fillText("✦", w / 2 + xOff, h / 2 + yOff);
             }
             ctx.restore();
             
-            // Overlay denyut simple
+            // OVERLAY DENYUT RINGAN
             ctx.globalCompositeOperation = 'lighter';
-            ctx.fillStyle = isDark ? `rgba(255,255,255,0.03)` : `rgba(255,60,120,0.08)`;
-            ctx.fillRect(0,0,w,h);
+            ctx.fillStyle = isDark ? `rgba(255, 255, 255, 0.03)` : `rgba(255, 60, 120, 0.08)`;
+            ctx.fillRect(0, 0, w, h);
             ctx.globalCompositeOperation = 'source-over';
         }
         
         let currentAudioElement = null;
+        
+        // RENDER LOOP
         function startRenderLoop(durationMs) {
             renderStartTime = performance.now();
             frameCount = 0;
-            let frameInterval = isEco ? 1000/24 : 1000/selectedFps;
-            let lastFrame = 0;
+            
             function renderFrame(now) {
-                if(!isRendering) return;
+                if (!isRendering) return;
                 const elapsed = now - renderStartTime;
                 const progress = Math.min(1, elapsed / durationMs);
                 updateEnergy();
                 drawFullEffect(progress);
                 time += 0.02;
                 frameCount++;
-                const percent = progress*100;
+                
+                const percent = progress * 100;
                 progressFill.style.width = `${percent}%`;
                 const currentSec = Math.floor(progress * audioDuration);
-                progressText.innerHTML = `${Math.floor(percent)}% (${currentSec}/${Math.floor(audioDuration)}s)`;
-                if(progress < 1 && isRendering) {
-                    requestAnimationFrame(renderFrame);
-                } else if(progress >= 1 && isRendering) {
+                progressText.innerHTML = `${Math.floor(percent)}% (${currentSec}/${Math.floor(audioDuration)} detik)`;
+                
+                if (progress < 1 && isRendering) {
+                    renderAnimationId = requestAnimationFrame(renderFrame);
+                } else if (progress >= 1 && isRendering) {
                     finishRendering();
                 }
             }
-            requestAnimationFrame(renderFrame);
+            renderAnimationId = requestAnimationFrame(renderFrame);
         }
         
+        // START RENDER
         async function startRender() {
-            if(!audioFileData || !audioDuration) { statusDiv.innerHTML = "Upload MP3 dulu!"; return; }
-            if(isRendering) return;
+            if (!audioFileData || !audioDuration) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Upload MP3 dulu!`;
+                statusDiv.className = "status error";
+                return;
+            }
+            if (isRendering) return;
+            
             isRendering = true;
             saveBtn.disabled = true;
             saveBtn.classList.add('rendering');
             progressContainer.style.display = "block";
             progressFill.style.width = "0%";
-            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Rendering...`;
+            statusDiv.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Rendering video...`;
             statusDiv.className = "status rendering";
-            time = 0; frameCount = 0;
+            time = 0;
+            frameCount = 0;
+            
             try {
                 const newAudio = await createNewAudioForRender();
                 currentAudioElement = newAudio;
                 newAudio.volume = 1;
                 newAudio.currentTime = 0;
-                canvasStream = canvas.captureStream(isEco ? 24 : selectedFps);
+                
+                canvasStream = canvas.captureStream(selectedFps);
+                
                 let audioStream = null;
-                if(audioContext && sourceNode) {
+                if (audioContext && sourceNode) {
                     const dest = audioContext.createMediaStreamDestination();
                     sourceNode.connect(dest);
                     audioStream = dest.stream;
                 }
+                
                 let tracks = [...canvasStream.getVideoTracks()];
-                if(audioStream) tracks = tracks.concat(audioStream.getAudioTracks());
+                if (audioStream) tracks = tracks.concat(audioStream.getAudioTracks());
                 const combined = new MediaStream(tracks);
-                mediaRecorder = new MediaRecorder(combined, {mimeType:'video/webm', videoBitsPerSecond: 3000000});
+                
+                mediaRecorder = new MediaRecorder(combined, {
+                    mimeType: 'video/webm',
+                    videoBitsPerSecond: 3000000
+                });
                 recordedChunks = [];
-                mediaRecorder.ondataavailable = e => { if(e.data.size>0) recordedChunks.push(e.data); };
+                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+                
                 mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, {type:'video/webm'});
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
-                    a.download = `douyin_${Date.now()}.webm`;
+                    const songName = audioFileInput.files[0]?.name.replace('.mp3', '') || 'douyin';
+                    a.download = `${songName}_douyin_effect.webm`;
                     a.href = url;
+                    document.body.appendChild(a);
                     a.click();
+                    document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    statusDiv.innerHTML = `✅ Selesai! File WebM siap.`;
+                    
+                    statusDiv.innerHTML = `<i class="fa fa-check-circle"></i> Selesai! Video WebM siap.`;
                     statusDiv.className = "status success";
                     progressContainer.style.display = "none";
                     saveBtn.disabled = false;
                     saveBtn.classList.remove('rendering');
                     isRendering = false;
-                    canvasStream.getTracks().forEach(t=>t.stop());
+                    if (canvasStream) canvasStream.getTracks().forEach(t => t.stop());
                 };
+                
                 mediaRecorder.start(100);
                 await newAudio.play();
+                
                 const durationMs = audioDuration * 1000;
                 startRenderLoop(durationMs);
+                
                 recordingTimeout = setTimeout(() => {
-                    if(isRendering && mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                    if (isRendering && mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                    }
                 }, durationMs + 500);
-            } catch(err) {
-                statusDiv.innerHTML = `❌ Error: ${err.message}`;
+            } catch (err) {
+                statusDiv.innerHTML = `<i class="fa fa-exclamation-triangle"></i> Error: ${err.message}`;
+                statusDiv.className = "status error";
                 cancelRender();
             }
         }
+        
         function finishRendering() {
-            if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-            if(renderAnimationId) cancelAnimationFrame(renderAnimationId);
-            if(recordingTimeout) clearTimeout(recordingTimeout);
-        }
-        function cancelRender() {
-            if(isRendering) {
-                if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
-                isRendering = false;
-                saveBtn.disabled = false;
-                progressContainer.style.display = "none";
-                if(currentAudioElement) currentAudioElement.pause();
-                if(audioContext) audioContext.close();
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
             }
         }
+        
+        function cancelRender() {
+            if (isRendering) {
+                if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                if (renderAnimationId) cancelAnimationFrame(renderAnimationId);
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+                isRendering = false;
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('rendering');
+                progressContainer.style.display = "none";
+                if (currentAudioElement) currentAudioElement.pause();
+                if (audioContext) audioContext.close();
+            }
+        }
+        
         saveBtn.onclick = startRender;
         
-        // Idle animation ringan
+        canvas.addEventListener('click', () => {
+            if (!isRendering && navigator.vibrate) navigator.vibrate(50);
+        });
+        
+        // IDLE ANIMATION
         function idle() {
-            if(!isRendering) {
+            if (!isRendering) {
                 updateEnergy();
                 drawFullEffect(0);
                 time += 0.03;
