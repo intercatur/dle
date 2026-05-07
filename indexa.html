@@ -26,7 +26,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .title {
@@ -50,13 +50,14 @@
             background: rgba(10, 20, 30, 0.7);
             backdrop-filter: blur(12px);
             border-radius: 24px;
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .canvas-wrapper {
             text-align: center;
+            margin-bottom: 24px;
         }
 
         canvas {
@@ -73,20 +74,20 @@
 
         .upload-area {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
 
         .file-label {
             background: #2a2f3f;
-            padding: 8px 18px;
+            padding: 10px 20px;
             border-radius: 40px;
             cursor: pointer;
             color: white;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.2s;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -101,28 +102,28 @@
 
         #audioName {
             color: #ffb347;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             background: rgba(0, 0, 0, 0.5);
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 40px;
         }
 
         .selector-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
-            margin: 12px 0;
+            margin: 16px 0;
             flex-wrap: wrap;
         }
 
         .theme-btn, .effect-btn {
             background: rgba(30, 35, 50, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 40px;
             cursor: pointer;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 500;
             transition: all 0.2s;
             display: inline-flex;
@@ -141,24 +142,28 @@
 
         .text-input-area {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 12px;
-            margin: 12px 0;
+            border-radius: 20px;
+            padding: 16px;
+            margin: 16px 0;
         }
 
         .text-input-group {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 12px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
+        }
+
+        .text-input-group:last-child {
+            margin-bottom: 0;
         }
 
         .text-input-group label {
             color: #ffd966;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            min-width: 70px;
+            min-width: 75px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -166,11 +171,11 @@
 
         .text-input-group input {
             flex: 1;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 40px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
@@ -181,16 +186,16 @@
 
         .res-selector {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
-            margin: 12px 0;
+            margin: 16px 0;
             flex-wrap: wrap;
         }
 
         .res-btn {
             background: rgba(30, 35, 50, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
+            padding: 8px 18px;
             border-radius: 40px;
             cursor: pointer;
             text-align: center;
@@ -204,7 +209,7 @@
         }
 
         .res-name {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: white;
             font-weight: bold;
         }
@@ -213,14 +218,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin: 12px 0;
+            gap: 16px;
+            margin: 16px 0;
             flex-wrap: wrap;
         }
 
         .slider-group span {
             color: #ffd966;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -236,8 +241,8 @@
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: white;
             border-radius: 50%;
             border: 1px solid #ff3b6f;
@@ -248,13 +253,13 @@
             display: flex;
             gap: 15px;
             background: rgba(0, 0, 0, 0.3);
-            padding: 5px 15px;
+            padding: 6px 18px;
             border-radius: 40px;
         }
 
         .fps-group label {
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -268,12 +273,12 @@
         .controls {
             display: flex;
             justify-content: center;
-            margin: 16px 0 12px;
+            margin: 20px 0 16px;
         }
 
         button {
-            padding: 10px 24px;
-            font-size: 0.9rem;
+            padding: 12px 28px;
+            font-size: 0.95rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
@@ -303,7 +308,7 @@
 
         .progress-container {
             display: none;
-            margin-top: 12px;
+            margin-top: 16px;
         }
 
         .progress-bar-bg {
@@ -321,27 +326,27 @@
         }
 
         .progress-text {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-align: center;
-            margin-top: 5px;
+            margin-top: 8px;
             color: #ffaa66;
         }
 
         .duration-info {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-align: center;
             color: #aaa;
-            margin-top: 3px;
+            margin-top: 5px;
         }
 
         .status {
             text-align: center;
-            margin-top: 12px;
-            padding: 8px;
+            margin-top: 16px;
+            padding: 10px;
             border-radius: 40px;
             background: rgba(0, 0, 0, 0.5);
             color: #ddd;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
         }
 
         .status.loading {
@@ -365,10 +370,13 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 10px; }
-            .card { padding: 12px; }
+            body { padding: 12px; }
+            .card { padding: 16px; }
             .text-input-group { flex-direction: column; align-items: stretch; }
             .text-input-group label { min-width: auto; }
+            .selector-group { gap: 8px; }
+            .theme-btn, .effect-btn { padding: 6px 14px; font-size: 0.7rem; }
+            .res-btn { padding: 6px 14px; }
         }
     </style>
 </head>
